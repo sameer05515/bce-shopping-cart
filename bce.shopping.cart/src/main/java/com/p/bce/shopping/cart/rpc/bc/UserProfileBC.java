@@ -1,6 +1,7 @@
 package com.p.bce.shopping.cart.rpc.bc;
 
 import com.p.bce.shopping.cart.rpc.dao.UserProfileDAO;
+import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
 public class UserProfileBC {
@@ -27,5 +28,15 @@ public class UserProfileBC {
 			e.printStackTrace();
 			return false;
 		}		
+	}
+
+	public UserAuthDTO validate(UserAuthDTO objUserAuthDTO) {
+		try {
+			return objUserProfileDAO.validate(objUserAuthDTO);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

@@ -1,6 +1,7 @@
 package com.p.bce.shopping.cart.rpc;
 
 import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
+import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
 public final class ShoppingApiRPC {
@@ -19,5 +20,9 @@ public final class ShoppingApiRPC {
 
 	public static boolean saveUserProfile(UserProfileDTO objUserProfileDTO) {
 		return objUserProfileBC.save(objUserProfileDTO);
+	}
+	
+	public static UserAuthDTO validateUserAuth(UserAuthDTO objUserAuthDTO) {
+		return objUserProfileBC.validate(objUserAuthDTO);
 	}
 }

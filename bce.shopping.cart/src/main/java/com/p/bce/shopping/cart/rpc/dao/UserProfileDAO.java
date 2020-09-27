@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
 
@@ -70,6 +71,29 @@ public class UserProfileDAO extends AbstractDAO {
 		ps.executeUpdate();
 		System.out.println("save");
 		closeConnection(con);
+	}
+
+	public UserAuthDTO validate(UserAuthDTO objUserAuthDTO) {
+
+		UserAuthDTO dtoFromDb=null;
+		try {
+			ResultSet rs = null;
+			Connection con = getConnection();
+			PreparedStatement ps = con.prepareStatement("select *  from user_auth where username=? and password=?");
+
+			ps.setString(1, objUserAuthDTO.getUserName());
+			ps.setString(2, objUserAuthDTO.getPassword());
+
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				dtoFromDb = new UserAuthDTO(rs.getString("username"), rs.getString("password"));
+			}
+			closeConnection(con);
+		} catch (Exception ex) {
+			dtoFromDb = null;
+			ex.printStackTrace();
+		}
+		return dtoFromDb;
 	}
 
 }

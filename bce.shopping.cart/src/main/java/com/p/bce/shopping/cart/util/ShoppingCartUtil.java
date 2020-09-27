@@ -2,6 +2,7 @@ package com.p.bce.shopping.cart.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
 public final class ShoppingCartUtil {
@@ -14,6 +15,12 @@ public final class ShoppingCartUtil {
 		
 		System.out.println("UserProfileDTO : "+dto);
 
+		return dto;
+	}
+	
+	public static UserAuthDTO getUserAuthDTOFromRequest(HttpServletRequest req) {
+		UserAuthDTO dto=new UserAuthDTO(req.getParameter("UserName"), req.getParameter("Password"));
+		System.out.println(dto);
 		return dto;
 	}
 }
