@@ -1,0 +1,27 @@
+package com.p.bce.shopping.cart.rpc.bc;
+
+import com.p.bce.shopping.cart.rpc.dao.UserProfileDAO;
+import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
+
+public class UserProfileBC {
+	private UserProfileDAO objUserProfileDAO;
+	
+	public boolean keyExists(UserProfileDTO objUserProfileDTO){
+		try {
+			return objUserProfileDAO.keyExists(objUserProfileDTO);
+		} catch (Exception e) {			
+			e.printStackTrace();
+			return true;
+		}
+	}
+
+	public boolean save(UserProfileDTO objUserProfileDTO)  {
+	     try {
+			objUserProfileDAO.save(objUserProfileDTO);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+	}
+}
