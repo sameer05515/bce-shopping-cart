@@ -25,13 +25,47 @@
         The Shopping Cart Application uses 7 tables to store information about books and orders. The tables used in the
         Shopping Cart Application are:
         <ul>
-            <li><b>Book_Details</b></li>
-            <li><b>Category_Details</b></li>
+            <li><b>Book_Details</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`book_details` 
+                    ( 
+                       `bookid`      INT NOT NULL, 
+                       `categoryid`  INT NOT NULL, 
+                       `title`       VARCHAR(100) NOT NULL, 
+                       `author`      VARCHAR(200) NOT NULL, 
+                       `publisher`   VARCHAR(200) NOT NULL, 
+                       `edition`     VARCHAR(100) NOT NULL, 
+                       `price`       DECIMAL(7, 2) NOT NULL, 
+                       `quantity`    INT NOT NULL, 
+                       `description` TEXT NOT NULL, 
+                       PRIMARY KEY (`bookid`) 
+                    ) 
+                  engine = innodb;                     
+                </pre>
+            </li>
+            <li><b>Category_Details</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`category_details` 
+                    ( 
+                        `categoryid`   INT(10) NOT NULL, 
+                        `categoryname` VARCHAR(100) NOT NULL, 
+                        PRIMARY KEY (`categoryid`) 
+                    ) 
+                    engine = innodb; 
+                </pre>
+            </li>
+
             <li><b>Order_Details</b></li>
+
             <li><b>Temp_Detail</b></li>
+
             <li><b>User_Auth</b></li>
+
             <li><b>User_Profile</b></li>
-            <li><b>Order_Table</b></li>
+
+            <li><b>Order_Table</b>
+
+            </li>
         </ul>
     </div>
 </body>
