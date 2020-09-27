@@ -88,19 +88,48 @@
 
             <li><b>User_Auth</b>
                 <pre>
-
+                    CREATE TABLE `bce-shopping-cart`.`user_auth` 
+                    ( 
+                       `username` VARCHAR(50) NOT NULL, 
+                       `password` VARCHAR(15) NOT NULL 
+                    ) 
+                  engine = innodb; 
             </pre>
             </li>
 
             <li><b>User_Profile</b>
                 <pre>
-
+                    CREATE TABLE `bce-shopping-cart`.`user_profile` 
+                    ( 
+                       `username`   VARCHAR(50) NOT NULL, 
+                       `password`   VARCHAR(15) NOT NULL, 
+                       `firstname`  VARCHAR(25) NOT NULL, 
+                       `middlename` VARCHAR(25) NULL, 
+                       `lastname`   VARCHAR(25) NOT NULL, 
+                       `address1`   VARCHAR(40) NOT NULL, 
+                       `address2`   VARCHAR(40) NULL, 
+                       `city`       VARCHAR(20) NOT NULL, 
+                       `state`      VARCHAR(20) NOT NULL, 
+                       `pincode`    VARCHAR(10) NOT NULL, 
+                       `email`      VARCHAR(50) NOT NULL, 
+                       `phone`      VARCHAR(12) NOT NULL, 
+                       PRIMARY KEY (`username`) 
+                    ) 
+                  engine = innodb; 
                 </pre>
             </li>
 
             <li><b>Order_Table</b>
                 <pre>
-
+                    CREATE TABLE `bce-shopping-cart`.`order_table` 
+                    ( 
+                       `orderid`     INT NOT NULL, 
+                       `userid`      VARCHAR(50) NOT NULL, 
+                       `totalamount` DECIMAL(15, 2) NOT NULL, 
+                       `orderdate`   VARCHAR(8) NOT NULL, 
+                       PRIMARY KEY (`orderid`) 
+                    ) 
+                  engine = innodb; 
                 </pre>
             </li>
         </ul>
