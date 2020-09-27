@@ -6,4 +6,8 @@
   <packaging>war</packaging>
   <name>BceShoppingCart</name>
   <description>Rewriting Shopping Cart Application</description>
+  
+  <build>
+  <finalName>ShoppingCart</finalName>
+  </build>
 </project>
