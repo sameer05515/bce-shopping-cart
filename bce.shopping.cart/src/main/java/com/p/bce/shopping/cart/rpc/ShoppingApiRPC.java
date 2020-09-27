@@ -19,6 +19,7 @@ public final class ShoppingApiRPC {
 	}
 
 	public static boolean saveUserProfile(UserProfileDTO objUserProfileDTO) {
+		
 		return objUserProfileBC.save(objUserProfileDTO);
 	}
 	
