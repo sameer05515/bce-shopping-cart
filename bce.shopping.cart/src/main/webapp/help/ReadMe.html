@@ -70,8 +70,20 @@
 
             <li><b>Temp_Detail</b>
                 <pre>
-
-            </pre>
+                    CREATE TABLE `bce-shopping-cart`.`temp_detail` 
+                    ( 
+                       `bookid`      INT NOT NULL, 
+                       `categoryid`  INT NOT NULL, 
+                       `title`       TEXT NOT NULL, 
+                       `author`      TEXT NOT NULL, 
+                       `publisher`   TEXT NOT NULL, 
+                       `edition`     TEXT NOT NULL, 
+                       `price`       DECIMAL(7, 2) NOT NULL, 
+                       `quantity`    INT NOT NULL, 
+                       `description` TEXT NOT NULL 
+                    ) 
+                  engine = innodb; 
+                </pre>
             </li>
 
             <li><b>User_Auth</b>
