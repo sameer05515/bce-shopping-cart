@@ -43,6 +43,7 @@
                   engine = innodb;                     
                 </pre>
             </li>
+
             <li><b>Category_Details</b>
                 <pre>
                     CREATE TABLE `bce-shopping-cart`.`category_details` 
@@ -55,16 +56,40 @@
                 </pre>
             </li>
 
-            <li><b>Order_Details</b></li>
+            <li><b>Order_Details</b>
+                <pre>
+                CREATE TABLE `bce-shopping-cart`.`order_details` 
+                ( 
+                   `orderid`  INT NOT NULL, 
+                   `bookid`   INT NOT NULL, 
+                   `quantity` INT NOT NULL 
+                ) 
+              engine = innodb;                 
+            </pre>
+            </li>
 
-            <li><b>Temp_Detail</b></li>
+            <li><b>Temp_Detail</b>
+                <pre>
 
-            <li><b>User_Auth</b></li>
+            </pre>
+            </li>
 
-            <li><b>User_Profile</b></li>
+            <li><b>User_Auth</b>
+                <pre>
+
+            </pre>
+            </li>
+
+            <li><b>User_Profile</b>
+                <pre>
+
+                </pre>
+            </li>
 
             <li><b>Order_Table</b>
+                <pre>
 
+                </pre>
             </li>
         </ul>
     </div>
