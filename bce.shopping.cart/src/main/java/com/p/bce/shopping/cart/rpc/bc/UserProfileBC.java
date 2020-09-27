@@ -6,6 +6,10 @@ import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 public class UserProfileBC {
 	private UserProfileDAO objUserProfileDAO;
 	
+	public UserProfileBC() {
+		objUserProfileDAO=new UserProfileDAO();
+	}
+	
 	public boolean keyExists(UserProfileDTO objUserProfileDTO){
 		try {
 			return objUserProfileDAO.keyExists(objUserProfileDTO);

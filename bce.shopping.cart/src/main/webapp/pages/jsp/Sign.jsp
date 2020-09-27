@@ -13,10 +13,13 @@
             if(exists){%>
         <script language="javascript">
         alert("User Name already exists");
-        location.href="NewUser.html";
+        location.href="../html/preLogin/NewUser.html";
         </script>
             <% } else{
-                ShoppingApiRPC.saveUserProfile(dto);
+                boolean success=ShoppingApiRPC.saveUserProfile(dto);
+                if(success){
+                    response.sendRedirect("../html/preLogin/Login.html");
+                }
             }          
         %>
         
