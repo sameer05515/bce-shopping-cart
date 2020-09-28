@@ -70,6 +70,18 @@
                         <input type="text" name="BookPublisher" size="25">
                     </td>
                 </tr>
+
+                <tr>
+                    <td width="17%" height="25">
+                        
+                    </td>
+                    <td width="32%" height="25">
+                        <input type="button" value="Search" name="Search" onclick="startSearch();">
+                    </td>
+                    <td width="51%" height="25">
+                        Click <a href="Logout.jsp">here</a> to logout.
+                    </td>
+                </tr>
             </table>
 
         </form>
