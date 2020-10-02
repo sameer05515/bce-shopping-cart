@@ -2,8 +2,10 @@ package com.p.bce.shopping.cart.rpc;
 
 import java.util.List;
 
+import com.p.bce.shopping.cart.rpc.bc.BookDetailsBC;
 import com.p.bce.shopping.cart.rpc.bc.CategoryDetailsBC;
 import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
+import com.p.bce.shopping.cart.rpc.pojo.BookDetailDTO;
 import com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO;
 import com.p.bce.shopping.cart.rpc.pojo.SearchedBookCategories;
 import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
@@ -12,6 +14,7 @@ import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 public final class ShoppingApiRPC {
 	private static UserProfileBC objUserProfileBC;
 	private static CategoryDetailsBC objCategoryDetailsBC;
+	private static BookDetailsBC objBookDetailsBC;
 
 	private ShoppingApiRPC() {
 
@@ -20,6 +23,7 @@ public final class ShoppingApiRPC {
 	static {
 		objUserProfileBC = new UserProfileBC();
 		objCategoryDetailsBC = new CategoryDetailsBC();
+		objBookDetailsBC=new BookDetailsBC();
 	}
 
 	/** User_Profile */
@@ -55,5 +59,12 @@ public final class ShoppingApiRPC {
 	
 	public static int insertIntoTempDetails(SearchedBookCategories objSearchedBookCategories) {
 		return objCategoryDetailsBC.insertIntoTempDetails(objSearchedBookCategories);
+	}
+	
+	
+	
+	/** Book Details*/
+	public static BookDetailDTO getBookDetail(int bookId) {
+		return objBookDetailsBC.getBookDetail(bookId);
 	}
 }
