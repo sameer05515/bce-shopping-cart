@@ -104,8 +104,83 @@
                                 
                             %>
                         </table>
+                        <br>
+                        <input type="submit" value=" Add to Cart " name="Add">
+                    </form>
+
+                    <hr>
+
+                    <p><font size="5">Search More</font></p>
+                    <form action="Search.jsp" name="newsrc" method="POST">
+                        <table border="1">
+                            <tr>
+                                <td>
+                                    <input type="radio" name="R1" value="Category" checked>
+                                </td>
+
+                                <td>
+                                    <select name="BookCategory" size="1">
+                                        <option value="Select" selected>Select Category</option>
+                                        <%
+                                        for(CategoryDetailsDTO d:listCategDet){
+                                            %>
+                                            <option value="<%=d.getCategoryName()%>">
+                                                <%=d.getCategoryName()%>
+                                            </option>
+                                            <%
+                                        }
+                                        %>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="radio" name="R1" value="Title">
+                                </td>
+                                <td>
+                                    Search by Book Title
+                                </td>
+                                <td><input type="text" name="BookTitle" size="25"></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="radio" name="R1" value="Author">
+                                </td>
+                                <td>
+                                    Search by Book Author
+                                </td>
+                                <td><input type="text" name="BookAuthor" size="25"></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="radio" name="R1" value="Publisher">
+                                </td>
+                                <td>
+                                    Search by Book Publisher
+                                </td>
+                                <td><input type="text" name="BookPublisher" size="25"></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="radio" name="R2" value="A"> Advanced Search
+                                </td>
+                                <td>
+                                    <input type="radio" name="R2" value="N" checked> New Search
+                                </td>
+                                <td>
+                                    <input type="submit" value="Search">
+                                </td>
+                            </tr>
+                        </table>
+
                     </form>
                     <%
+            }else{
+                response.sendRedirect("../preLogin/Unauthorised.html");
             }
 
         %>
