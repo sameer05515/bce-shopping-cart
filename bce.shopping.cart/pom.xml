@@ -13,7 +13,7 @@
 	<groupId>com.p.bce.shopping.cart</groupId>
 	<artifactId>bce.shopping.cart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>BceShoppingCart</name>
 	<description>Rewriting Shopping Cart Application with Spring Boot</description>
 

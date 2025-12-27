@@ -13,9 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-		// JSP files are now in src/main/resources/META-INF/resources/WEB-INF/views/
-		// The prefix is relative to the servlet context root
-		// In JAR mode, META-INF/resources is served at root, so /WEB-INF/views/ works
+		// JSP files are in src/main/webapp/WEB-INF/views/ (WAR packaging)
 		resolver.setPrefix("/WEB-INF/views/");
 		resolver.setSuffix(".jsp");
 		resolver.setViewClass(JstlView.class);
@@ -27,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// Serve static resources from standard Spring Boot location
-		// JSP files are now in src/main/resources/META-INF/resources/WEB-INF/views/
+		// JSP files are in src/main/webapp/WEB-INF/views/ (WAR packaging)
 		registry.addResourceHandler("/**")
 				.addResourceLocations("classpath:/static/", 
 									  "classpath:/META-INF/resources/", 
