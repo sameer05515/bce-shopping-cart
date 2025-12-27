@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.p.bce.shopping.cart.rpc.bc.BookDetailsBC;
+import com.p.bce.shopping.cart.rpc.bc.CartBC;
+import com.p.bce.shopping.cart.rpc.bc.WishlistBC;
 import com.p.bce.shopping.cart.rpc.pojo.BookDetailDTO;
 import com.p.bce.shopping.cart.rpc.pojo.CartItemDTO;
 
@@ -23,6 +25,12 @@ public class CartController {
 
     @Autowired
     private BookDetailsBC bookDetailsBC;
+    
+    @Autowired
+    private WishlistBC wishlistBC;
+    
+    @Autowired
+    private CartBC cartBC;
 
     @GetMapping({"/pages/html/postLogin/Cart.jsp", "/pages/html/postLogin/Cart"})
     public String viewCart(HttpSession session, Model model) {
@@ -36,6 +44,19 @@ public class CartController {
         System.out.println("User logged in: " + userName);
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
+        
+        // Load cart from database if session cart is empty
+        if (cart == null || cart.isEmpty()) {
+            List<CartItemDTO> dbCart = cartBC.getCartItems(userName);
+            if (dbCart != null && !dbCart.isEmpty()) {
+                cart = dbCart;
+                session.setAttribute("cart", cart);
+                System.out.println("Loaded " + cart.size() + " items from database cart");
+            } else {
+                cart = new ArrayList<>();
+            }
+        }
+        
         if (cart == null) {
             cart = new ArrayList<>();
         }
@@ -169,6 +190,10 @@ public class CartController {
         }
 
         session.setAttribute("cart", cart);
+        
+        // Save to database for persistence
+        cartBC.saveCart(userName, cart);
+        
         redirectAttributes.addFlashAttribute("message", "Items added to cart successfully!");
         return "redirect:/pages/html/postLogin/Cart";
     }
@@ -219,6 +244,10 @@ public class CartController {
         cart.removeAll(itemsToRemove);
 
         session.setAttribute("cart", cart);
+        
+        // Save to database for persistence
+        cartBC.saveCart(userName, cart);
+        
         if (!hasError) {
             redirectAttributes.addFlashAttribute("message", "Cart updated successfully!");
         }
@@ -240,19 +269,205 @@ public class CartController {
         if (cart != null) {
             cart.removeIf(item -> item.getBookId() == bookId);
             session.setAttribute("cart", cart);
+            
+            // Remove from database
+            cartBC.removeCartItem(userName, bookId);
         }
 
         return "redirect:/pages/html/postLogin/Cart";
     }
 
     @PostMapping("/pages/html/postLogin/Cart/clear")
-    public String clearCart(HttpSession session) {
+    public String clearCart(HttpSession session, RedirectAttributes redirectAttributes) {
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
         session.removeAttribute("cart");
+        
+        // Clear from database
+        cartBC.clearCart(userName);
+        
+        redirectAttributes.addFlashAttribute("message", "Cart cleared successfully!");
+        return "redirect:/pages/html/postLogin/Cart";
+    }
+    
+    /**
+     * Save item for later - move from cart to wishlist
+     */
+    @PostMapping("/pages/html/postLogin/Cart/saveForLater")
+    public String saveForLater(
+            @RequestParam("bookId") int bookId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        
+        String userName = (String) session.getAttribute("user");
+        if (userName == null) {
+            return "redirect:/pages/html/preLogin/Unauthorised.html";
+        }
+
+        @SuppressWarnings("unchecked")
+        List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
+        if (cart == null || cart.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Cart is empty.");
+            return "redirect:/pages/html/postLogin/Cart";
+        }
+
+        // Find the item in cart
+        CartItemDTO itemToMove = null;
+        for (CartItemDTO item : cart) {
+            if (item.getBookId() == bookId) {
+                itemToMove = item;
+                break;
+            }
+        }
+
+        if (itemToMove == null) {
+            redirectAttributes.addFlashAttribute("error", "Item not found in cart.");
+            return "redirect:/pages/html/postLogin/Cart";
+        }
+
+        // Add to wishlist
+        boolean added = wishlistBC.addToWishlist(userName, bookId);
+        if (added) {
+            // Remove from cart
+            cart.removeIf(item -> item.getBookId() == bookId);
+            session.setAttribute("cart", cart);
+            
+            // Remove from database
+            cartBC.removeCartItem(userName, bookId);
+            
+            redirectAttributes.addFlashAttribute("message", itemToMove.getTitle() + " moved to wishlist!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Item is already in your wishlist or could not be moved.");
+        }
+
+        return "redirect:/pages/html/postLogin/Cart";
+    }
+    
+    /**
+     * Quick update quantity for a single item
+     */
+    @PostMapping("/pages/html/postLogin/Cart/updateQuantity")
+    public String updateQuantity(
+            @RequestParam("bookId") int bookId,
+            @RequestParam("quantity") int quantity,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        
+        String userName = (String) session.getAttribute("user");
+        if (userName == null) {
+            return "redirect:/pages/html/preLogin/Unauthorised.html";
+        }
+
+        @SuppressWarnings("unchecked")
+        List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
+        if (cart == null) {
+            return "redirect:/pages/html/postLogin/Cart";
+        }
+
+        // Find and update the item
+        for (CartItemDTO item : cart) {
+            if (item.getBookId() == bookId) {
+                // Refresh stock availability
+                BookDetailDTO book = bookDetailsBC.getBookDetail(bookId);
+                if (book != null && book.getBookId() > 0) {
+                    item.setAvailableQuantity(book.getQuantity());
+                }
+                
+                if (quantity <= 0) {
+                    cart.remove(item);
+                    cartBC.removeCartItem(userName, bookId);
+                    redirectAttributes.addFlashAttribute("message", item.getTitle() + " removed from cart.");
+                } else if (quantity <= item.getAvailableQuantity()) {
+                    item.setQuantity(quantity);
+                    cartBC.saveCartItem(userName, bookId, quantity);
+                    redirectAttributes.addFlashAttribute("message", "Quantity updated successfully!");
+                } else {
+                    redirectAttributes.addFlashAttribute("error", 
+                        "Only " + item.getAvailableQuantity() + " items available for " + item.getTitle() + ".");
+                }
+                break;
+            }
+        }
+
+        session.setAttribute("cart", cart);
+        return "redirect:/pages/html/postLogin/Cart";
+    }
+    
+    /**
+     * Refresh cart - update stock availability and prices
+     */
+    @PostMapping("/pages/html/postLogin/Cart/refresh")
+    public String refreshCart(HttpSession session, RedirectAttributes redirectAttributes) {
+        String userName = (String) session.getAttribute("user");
+        if (userName == null) {
+            return "redirect:/pages/html/preLogin/Unauthorised.html";
+        }
+
+        @SuppressWarnings("unchecked")
+        List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
+        if (cart == null || cart.isEmpty()) {
+            return "redirect:/pages/html/postLogin/Cart";
+        }
+
+        List<CartItemDTO> itemsToRemove = new ArrayList<>();
+        boolean hasChanges = false;
+
+        // Refresh each item's stock and price
+        for (CartItemDTO item : cart) {
+            BookDetailDTO book = bookDetailsBC.getBookDetail(item.getBookId());
+            if (book != null && book.getBookId() > 0) {
+                // Update available quantity
+                int oldAvailable = item.getAvailableQuantity();
+                item.setAvailableQuantity(book.getQuantity());
+                
+                // Update price if changed
+                BigDecimal newPrice = BigDecimal.valueOf(book.getPrice());
+                if (item.getPrice().compareTo(newPrice) != 0) {
+                    item.setPrice(newPrice);
+                    hasChanges = true;
+                }
+                
+                // Check if item is out of stock
+                if (book.getQuantity() == 0) {
+                    itemsToRemove.add(item);
+                    hasChanges = true;
+                } else if (item.getQuantity() > book.getQuantity()) {
+                    // Adjust quantity if exceeds available stock
+                    item.setQuantity(book.getQuantity());
+                    hasChanges = true;
+                }
+            } else {
+                // Book no longer exists
+                itemsToRemove.add(item);
+                hasChanges = true;
+            }
+        }
+
+        // Remove unavailable items
+        for (CartItemDTO item : itemsToRemove) {
+            cartBC.removeCartItem(userName, item.getBookId());
+        }
+        cart.removeAll(itemsToRemove);
+
+        session.setAttribute("cart", cart);
+        
+        // Sync with database
+        cartBC.saveCart(userName, cart);
+        
+        if (hasChanges) {
+            if (!itemsToRemove.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", 
+                    itemsToRemove.size() + " item(s) removed due to unavailability.");
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Cart refreshed successfully!");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Cart is up to date!");
+        }
+
         return "redirect:/pages/html/postLogin/Cart";
     }
 

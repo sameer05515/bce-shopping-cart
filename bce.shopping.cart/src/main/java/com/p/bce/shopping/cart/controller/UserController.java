@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
+import com.p.bce.shopping.cart.rpc.bc.CartBC;
 import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
+import com.p.bce.shopping.cart.rpc.pojo.CartItemDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
@@ -19,6 +23,9 @@ public class UserController {
 
 	@Autowired
 	private UserProfileBC userProfileBC;
+	
+	@Autowired
+	private CartBC cartBC;
 
 	@PostMapping("/pages/jsp/Validate.jsp")
 	public String validateUser(
@@ -35,6 +42,13 @@ public class UserController {
 		}
 		
 		session.setAttribute("user", userAuth.getUserName());
+		
+		// Load persistent cart from database
+		List<CartItemDTO> savedCart = cartBC.getCartItems(userAuth.getUserName());
+		if (savedCart != null && !savedCart.isEmpty()) {
+			session.setAttribute("cart", savedCart);
+			System.out.println("Loaded " + savedCart.size() + " items from persistent cart for user: " + userAuth.getUserName());
+		}
 		
 		if ("Administrator".equalsIgnoreCase(userAuth.getUserName())) {
 			return "redirect:/pages/html/postLogin/Admin.html";

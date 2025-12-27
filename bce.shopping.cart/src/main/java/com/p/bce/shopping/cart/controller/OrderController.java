@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.p.bce.shopping.cart.rpc.bc.CartBC;
 import com.p.bce.shopping.cart.rpc.bc.OrderBC;
 import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
 import com.p.bce.shopping.cart.rpc.pojo.CartItemDTO;
@@ -28,6 +29,9 @@ public class OrderController {
     
     @Autowired
     private UserProfileBC userProfileBC;
+    
+    @Autowired
+    private CartBC cartBC;
 
     @GetMapping({"/pages/html/postLogin/Checkout.jsp", "/pages/html/postLogin/Checkout"})
     public String checkout(HttpSession session, Model model) {
@@ -176,8 +180,9 @@ public class OrderController {
         int orderId = orderBC.createOrder(order, orderDetails);
         System.out.println("Order created with ID: " + orderId);
         if (orderId > 0) {
-            // Clear cart
+            // Clear cart from session and database
             session.removeAttribute("cart");
+            cartBC.clearCart(userName);
             redirectAttributes.addFlashAttribute("message", "Order placed successfully! Order ID: " + orderId);
             System.out.println("Order placed successfully, redirecting to OrderHistory");
             return "redirect:/pages/html/postLogin/OrderHistory";

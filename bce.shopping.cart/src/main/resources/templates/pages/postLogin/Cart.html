@@ -68,16 +68,24 @@
                                         <td th:text="${item.author}">Author</td>
                                         <td>₹<span th:text="${#numbers.formatDecimal(item.price, 0, 2)}">0.00</span></td>
                                         <td>
-                                            <input type="number" 
-                                                   class="form-control form-control-sm" 
-                                                   style="width: 80px;"
-                                                   th:name="'quantity_' + ${item.bookId}"
-                                                   th:id="'quantity_' + ${item.bookId}"
-                                                   th:value="${item.quantity}" min="1" 
-                                                   th:max="${item.availableQuantity}">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="number" 
+                                                       class="form-control form-control-sm" 
+                                                       style="width: 80px;"
+                                                       th:name="'quantity_' + ${item.bookId}"
+                                                       th:id="'quantity_' + ${item.bookId}"
+                                                       th:value="${item.quantity}" 
+                                                       min="1" 
+                                                       th:max="${item.availableQuantity}"
+                                                       th:attr="data-book-id=${item.bookId}, data-max-quantity=${item.availableQuantity}"
+                                                       onchange="validateQuantity(this)">
+                                                <small class="text-muted" th:if="${item.availableQuantity > 0}">
+                                                    / <span th:text="${item.availableQuantity}">0</span> available
+                                                </small>
+                                            </div>
                                             <div th:if="${item.availableQuantity <= 5 and item.availableQuantity > 0}" 
                                                  class="badge bg-warning text-dark mt-1">
-                                                <i class="bi bi-exclamation-triangle"></i> Low Stock!
+                                                <i class="bi bi-exclamation-triangle"></i> Only <span th:text="${item.availableQuantity}">0</span> left!
                                             </div>
                                             <div th:if="${item.availableQuantity == 0}" 
                                                  class="badge bg-danger mt-1">
@@ -86,10 +94,20 @@
                                         </td>
                                         <td><strong class="text-success">₹<span th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)}">0.00</span></strong></td>
                                         <td>
-                                            <a th:href="@{/pages/html/postLogin/Cart/remove(bookId=${item.bookId})}" 
-                                               class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Remove
-                                            </a>
+                                            <div class="btn-group-vertical btn-group-sm" role="group">
+                                                <form method="POST" th:action="@{/pages/html/postLogin/Cart/saveForLater}" class="d-inline">
+                                                    <input type="hidden" name="bookId" th:value="${item.bookId}">
+                                                    <button type="submit" class="btn btn-outline-warning btn-sm w-100 mb-1" 
+                                                            title="Save for later">
+                                                        <i class="bi bi-heart"></i> Save for Later
+                                                    </button>
+                                                </form>
+                                                <a th:href="@{/pages/html/postLogin/Cart/remove(bookId=${item.bookId})}" 
+                                                   class="btn btn-outline-danger btn-sm w-100"
+                                                   onclick="return confirm('Remove this item from cart?');">
+                                                    <i class="bi bi-trash"></i> Remove
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -104,9 +122,17 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-arrow-clockwise"></i> Update Cart
                             </button>
+                            <form method="POST" th:action="@{/pages/html/postLogin/Cart/refresh}" class="d-inline">
+                                <button type="submit" class="btn btn-outline-info">
+                                    <i class="bi bi-arrow-repeat"></i> Refresh Cart
+                                </button>
+                            </form>
                             <a th:href="@{/pages/html/postLogin/Cart/clear}" class="btn btn-outline-secondary" 
                                onclick="return confirm('Are you sure you want to clear your cart?');">
                                 <i class="bi bi-trash"></i> Clear Cart
+                            </a>
+                            <a th:href="@{/pages/html/postLogin/SearchCriteria}" class="btn btn-outline-primary">
+                                <i class="bi bi-plus-circle"></i> Continue Shopping
                             </a>
                         </div>
                     </div>
@@ -159,5 +185,55 @@
     
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Cart Enhancement Scripts -->
+    <script>
+        function validateQuantity(input) {
+            const maxQuantity = parseInt(input.getAttribute('data-max-quantity'));
+            const currentValue = parseInt(input.value);
+            
+            if (isNaN(currentValue) || currentValue < 1) {
+                input.value = 1;
+                showQuantityError(input, 'Quantity must be at least 1');
+                return false;
+            }
+            
+            if (currentValue > maxQuantity) {
+                input.value = maxQuantity;
+                showQuantityError(input, 'Only ' + maxQuantity + ' items available');
+                return false;
+            }
+            
+            // Remove any error styling
+            input.classList.remove('is-invalid');
+            const errorMsg = input.parentElement.querySelector('.quantity-error');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
+            
+            return true;
+        }
+        
+        function showQuantityError(input, message) {
+            input.classList.add('is-invalid');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback quantity-error';
+            errorDiv.textContent = message;
+            input.parentElement.appendChild(errorDiv);
+        }
+        
+        // Auto-update subtotal on quantity change (optional enhancement)
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInputs = document.querySelectorAll('input[type="number"][id^="quantity_"]');
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (validateQuantity(this)) {
+                        // Optionally trigger form submission or AJAX update
+                        // For now, user can click "Update Cart" button
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
