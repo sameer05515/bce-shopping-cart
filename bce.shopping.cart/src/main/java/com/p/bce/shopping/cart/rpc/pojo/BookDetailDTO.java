@@ -13,6 +13,7 @@ public class BookDetailDTO {
 	private double price;
 	private int quantity;
 	private String description;
+	private String categoryName; // For display purposes
 	
 	public BookDetailDTO() {
 		super();
@@ -104,11 +105,19 @@ public class BookDetailDTO {
 		this.description = description;
 	}
 
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
 	@Override
 	public String toString() {
 		return "BookDetailDTO [bookId=" + bookId + ", categoryId=" + categoryId + ", title=" + title + ", author="
 				+ author + ", publisher=" + publisher + ", edition=" + edition + ", price=" + price + ", quantity="
-				+ quantity + ", description=" + description + "]";
+				+ quantity + ", description=" + description + ", categoryName=" + categoryName + "]";
 	}
 	
 	

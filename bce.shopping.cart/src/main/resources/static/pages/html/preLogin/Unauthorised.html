@@ -1,14 +1,36 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Invalid User</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Unauthorized Access - BCE Shopping Cart</title>
         <link rel="stylesheet" href="../../lib/css/main.css">
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <br><br>
-        <b>Your session is not valid. Please login again.</b>
-        <br><br>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>🔒 Unauthorized Access</h1>
+            </div>
 
-        <b>Click<a href="NewUser.html"> Here to Login</b>
+            <div class="alert alert-warning">
+                <strong>Your session is not valid. Please login again.</strong>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Access Denied</div>
+                <p style="margin: 20px 0; color: #555;">
+                    You need to be logged in to access this page. Please login with your credentials to continue.
+                </p>
+
+                <div class="btn-group">
+                    <a href="Login.html" class="btn btn-primary">
+                        🔐 Login
+                    </a>
+                    <a href="NewUser.html" class="btn btn-secondary">
+                        ✍️ Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

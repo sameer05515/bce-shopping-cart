@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - Admin - BCE Shopping Cart</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
+</head>
+<body>
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-receipt-cutoff"></i> Order Details</h1>
+        </div>
+
+        <div th:if="${order != null}">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Order Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Order ID:</dt>
+                                <dd class="col-sm-8"><strong>#<span th:text="${order.orderId}">0</span></strong></dd>
+                                
+                                <dt class="col-sm-4">Customer:</dt>
+                                <dd class="col-sm-8" th:text="${order.userId}">Customer</dd>
+                                
+                                <dt class="col-sm-4">Order Date:</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-calendar"></i> 
+                                    <span th:text="${order.orderDate != null ? #dates.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Status:</dt>
+                                <dd class="col-sm-8">
+                                    <form method="POST" th:action="@{/admin/orders/updateStatus}" class="d-inline">
+                                        <input type="hidden" name="id" th:value="${order.orderId}">
+                                        <select name="status" class="form-select form-select-sm d-inline-block" 
+                                                style="width: auto;" onchange="this.form.submit()">
+                                            <option value="PENDING" th:selected="${order.status == 'PENDING'}">PENDING</option>
+                                            <option value="CONFIRMED" th:selected="${order.status == 'CONFIRMED'}">CONFIRMED</option>
+                                            <option value="PROCESSING" th:selected="${order.status == 'PROCESSING'}">PROCESSING</option>
+                                            <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">SHIPPED</option>
+                                            <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">DELIVERED</option>
+                                            <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">CANCELLED</option>
+                                        </select>
+                                    </form>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Total Amount:</dt>
+                                <dd class="col-sm-8">
+                                    <strong class="text-success fs-5">₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Order Items</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div th:if="${order.orderDetails == null or order.orderDetails.isEmpty()}" class="text-center py-5">
+                                <i class="bi bi-inbox display-1 text-muted"></i>
+                                <p class="text-muted mt-3">No order details found.</p>
+                            </div>
+                            <div th:if="${order.orderDetails != null and !order.orderDetails.isEmpty()}">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Book</th>
+                                                <th>Quantity</th>
+                                                <th>Unit Price</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="detail : ${order.orderDetails}">
+                                                <td>
+                                                    <strong>
+                                                        <span th:if="${detail.bookTitle != null and !detail.bookTitle.isEmpty()}" th:text="${detail.bookTitle}">Book Title</span>
+                                                        <span th:if="${detail.bookTitle == null or detail.bookTitle.isEmpty()}">
+                                                            Book ID: <span th:text="${detail.bookId}">0</span>
+                                                        </span>
+                                                    </strong><br>
+                                                    <small class="text-muted" th:if="${detail.bookAuthor != null and !detail.bookAuthor.isEmpty()}">
+                                                        by <span th:text="${detail.bookAuthor}">Author</span>
+                                                    </small>
+                                                </td>
+                                                <td th:text="${detail.quantity}">1</td>
+                                                <td>₹<span th:text="${detail.price != null ? #numbers.formatDecimal(detail.price, 0, 2) : '0.00'}">0.00</span></td>
+                                                <td><strong class="text-success">₹<span th:text="${detail.subtotal != null ? #numbers.formatDecimal(detail.subtotal, 0, 2) : '0.00'}">0.00</span></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                <a th:href="@{/admin/orders}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Orders
+                </a>
+            </div>
+        </div>
+        
+        <div th:if="${order == null}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> Order not found.
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -36,6 +36,39 @@ function validate(){
         alert("Phone Number can not be blank!!");
         return;
     }else{
+        // Password strength validation
+        var password = document.newUserFrm.Password.value;
+        
+        if(password.length < 8){
+            alert("Password must be at least 8 characters long!!");
+            return;
+        }
+        
+        var hasUpperCase = /[A-Z]/.test(password);
+        var hasLowerCase = /[a-z]/.test(password);
+        var hasDigit = /\d/.test(password);
+        var hasSpecialChar = /[@$!%*?&]/.test(password);
+        
+        if(!hasUpperCase){
+            alert("Password must contain at least one uppercase letter!!");
+            return;
+        }
+        
+        if(!hasLowerCase){
+            alert("Password must contain at least one lowercase letter!!");
+            return;
+        }
+        
+        if(!hasDigit){
+            alert("Password must contain at least one digit!!");
+            return;
+        }
+        
+        if(!hasSpecialChar){
+            alert("Password must contain at least one special character (@$!%*?&)!!");
+            return;
+        }
+        
         document.forms[0].action="/pages/jsp/Sign.jsp";
         document.forms[0].submit();
     }

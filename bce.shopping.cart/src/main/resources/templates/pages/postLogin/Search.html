@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - BCE Shopping Cart</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
+</head>
+<body>
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-book"></i> Search Results</h1>
+        </div>
+
+        <div th:if="${searchResults == null or searchResults.isEmpty()}" class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> <strong>No Results Found:</strong> Please try a different search criteria.
+        </div>
+
+        <div th:if="${searchResults != null and !searchResults.isEmpty()}">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Found <span th:text="${#lists.size(searchResults)}">0</span> Book(s)</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/cart/add}" method="POST" name="cart">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Select</th>
+                                        <th>Book Name</th>
+                                        <th>Author</th>
+                                        <th>Publisher</th>
+                                        <th>Edition</th>
+                                        <th>Price (₹)</th>
+                                        <th>Stock</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th th:if="${userName != null}">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="book, iterStat : ${searchResults}">
+                                        <td th:text="${iterStat.count}">1</td>
+                                        <td>
+                                            <input type="checkbox" class="form-check-input" name="bookIds" 
+                                                   th:value="${book.bookId}">
+                                        </td>
+                                        <td><strong th:text="${book.title}">Book Title</strong></td>
+                                        <td th:text="${book.author}">Author</td>
+                                        <td th:text="${book.publisher}">Publisher</td>
+                                        <td th:text="${book.edition}">Edition</td>
+                                        <td><strong class="text-success">₹<span th:text="${#numbers.formatDecimal(book.price, 0, 2)}">0</span></strong></td>
+                                        <td>
+                                            <span th:if="${book.quantity > 0}" class="badge bg-success" th:text="${book.quantity}">0</span>
+                                            <span th:if="${book.quantity == 0}" class="badge bg-danger">Out of Stock</span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted" th:text="${#strings.abbreviate(book.description, 50)}">Description</small>
+                                        </td>
+                                        <td><span class="badge bg-secondary" th:text="${book.categoryName}">Category</span></td>
+                                        <td th:if="${userName != null}">
+                                            <form th:action="@{/pages/html/postLogin/Wishlist/add}" method="POST" class="d-inline">
+                                                <input type="hidden" name="bookId" th:value="${book.bookId}">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Add to Wishlist">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-cart-plus"></i> Add Selected to Cart
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

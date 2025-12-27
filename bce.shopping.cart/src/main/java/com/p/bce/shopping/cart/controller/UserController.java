@@ -39,7 +39,7 @@ public class UserController {
 		if ("Administrator".equalsIgnoreCase(userAuth.getUserName())) {
 			return "redirect:/pages/html/postLogin/Admin.html";
 		} else {
-			return "redirect:/pages/html/postLogin/SearchCriteria.jsp";
+			return "redirect:/pages/html/postLogin/SearchCriteria";
 		}
 	}
 
@@ -77,9 +77,15 @@ public class UserController {
 		return "pages/html/preLogin/NewUser";
 	}
 
-	@GetMapping("/pages/html/postLogin/Logout.jsp")
+	@GetMapping({"/pages/html/postLogin/Logout.jsp", "/pages/html/postLogin/Logout"})
 	public String logout(HttpSession session) {
+		System.out.println("UserController.logout() called");
+		String userName = (String) session.getAttribute("user");
+		if (userName != null) {
+			System.out.println("Logging out user: " + userName);
+		}
 		session.invalidate();
+		System.out.println("Session invalidated, redirecting to login");
 		return "redirect:/pages/html/preLogin/Login.html";
 	}
 }

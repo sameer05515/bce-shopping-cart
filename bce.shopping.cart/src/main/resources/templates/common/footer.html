@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Footer Fragment</title>
+</head>
+<body>
+    <footer th:fragment="footer" class="bg-light text-center text-muted py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 BCE Shopping Cart. All rights reserved.</p>
+            <p class="mb-0">
+                <a th:href="@{/help/ReadMe.html}" class="text-decoration-none">
+                    <i class="bi bi-question-circle"></i> Help & Documentation
+                </a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
