@@ -53,7 +53,7 @@
                                 Found <%= listSearchedBookCategories.size() %> Book(s)
                             </div>
                             
-                            <form action="/pages/html/postLogin/Inter_Cart.jsp" name="cart">
+                            <form action="/pages/html/postLogin/Inter_Cart.jsp" method="POST" name="cart">
                                 <div class="table-container">
                                     <table class="data-table">
                                         <thead>
@@ -80,7 +80,7 @@
                                                     <tr>
                                                         <td><%= count %></td>
                                                         <td>
-                                                            <input type="checkbox" name="chk<%= count %>" 
+                                                            <input type="checkbox" name="chk" 
                                                                    value="<%= s.getBookId() %>">
                                                         </td>
                                                         <td><strong><%= s.getTitle() %></strong></td>

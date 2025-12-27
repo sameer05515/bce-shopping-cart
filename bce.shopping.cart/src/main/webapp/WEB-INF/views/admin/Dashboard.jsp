@@ -34,6 +34,16 @@
                         <a href="/admin/categories" class="btn btn-primary">Manage Categories</a>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">📋 Orders</div>
+                    <div style="font-size: 3em; color: #667eea; text-align: center; padding: 20px;">
+                        📦
+                    </div>
+                    <div style="text-align: center;">
+                        <a href="/admin/orders" class="btn btn-primary">Manage Orders</a>
+                    </div>
+                </div>
             </div>
 
             <div class="card" style="margin-top: 30px;">
@@ -43,6 +53,7 @@
                     <a href="/admin/categories/add" class="btn btn-success">➕ Add New Category</a>
                     <a href="/admin/books" class="btn btn-secondary">📋 View All Books</a>
                     <a href="/admin/categories" class="btn btn-secondary">📋 View All Categories</a>
+                    <a href="/admin/orders" class="btn btn-secondary">📋 View All Orders</a>
                 </div>
             </div>
         </div>
