@@ -14,9 +14,13 @@ public class WebConfig implements WebMvcConfigurer {
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
 		// JSP files are now in src/main/resources/META-INF/resources/WEB-INF/views/
+		// The prefix is relative to the servlet context root
+		// In JAR mode, META-INF/resources is served at root, so /WEB-INF/views/ works
 		resolver.setPrefix("/WEB-INF/views/");
 		resolver.setSuffix(".jsp");
 		resolver.setViewClass(JstlView.class);
+		resolver.setExposeContextBeansAsAttributes(true);
+		resolver.setOrder(1);
 		registry.viewResolver(resolver);
 	}
 
