@@ -1,69 +1,79 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Change Password</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Change Password - BCE Shopping Cart</title>
         <link rel="stylesheet" href="/pages/lib/css/main.css">
         <script src="/pages/lib/js/ChangePassword.js"></script>
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        
-        <%
-            String error = (String) request.getAttribute("error");
-            String success = (String) request.getAttribute("success");
-        %>
-        
-        <div style="text-align: right; margin: 10px;">
-            <a href="/pages/html/postLogin/Profile.jsp">Back to Profile</a> | 
-            <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
-        </div>
-        
-        <% if (error != null) { %>
-            <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px;">
-                <%= error %>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>🔒 Change Password</h1>
             </div>
-        <% } %>
-        
-        <% if (success != null) { %>
-            <div style="color: green; padding: 10px; border: 1px solid green; margin: 10px;">
-                <%= success %>
+
+            <div class="nav-bar">
+                <div class="nav-links">
+                    <a href="/pages/html/postLogin/Profile.jsp">← Back to Profile</a>
+                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🏠 Home</a>
+                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
+                </div>
             </div>
-        <% } %>
         
-        <h2>Change Password</h2>
-        
-        <div style="background-color: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc;">
-            <b>Password Requirements:</b>
-            <ul style="margin: 5px 0;">
-                <li>At least 8 characters long</li>
-                <li>Contains at least one uppercase letter</li>
-                <li>Contains at least one lowercase letter</li>
-                <li>Contains at least one digit</li>
-                <li>Contains at least one special character (@$!%*?&)</li>
-            </ul>
+            <%
+                String error = (String) request.getAttribute("error");
+                String message = (String) request.getAttribute("message");
+            %>
+            
+            <% if (error != null) { %>
+                <div class="alert alert-error">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+            <% } %>
+            
+            <% if (message != null) { %>
+                <div class="alert alert-success">
+                    <strong>Success:</strong> <%= message %>
+                </div>
+            <% } %>
+            
+            <div class="password-requirements">
+                <h4>Password Requirements:</h4>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains at least one uppercase letter (A-Z)</li>
+                    <li>Contains at least one lowercase letter (a-z)</li>
+                    <li>Contains at least one digit (0-9)</li>
+                    <li>Contains at least one special character (@$!%*?&)</li>
+                </ul>
+            </div>
+            
+            <form name="changePasswordFrm" method="POST" action="/pages/html/postLogin/ChangePassword.jsp" 
+                  onsubmit="return validate();" class="card">
+                <div class="form-group">
+                    <label for="CurrentPassword" class="required">Current Password</label>
+                    <input type="password" id="CurrentPassword" name="CurrentPassword" class="form-control" 
+                           placeholder="Enter your current password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="NewPassword" class="required">New Password</label>
+                    <input type="password" id="NewPassword" name="NewPassword" class="form-control" 
+                           placeholder="Enter new password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ConfirmPassword" class="required">Confirm New Password</label>
+                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" 
+                           placeholder="Re-enter new password" required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">🔒 Change Password</button>
+                    <a href="/pages/html/postLogin/Profile.jsp" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-        
-        <form name="changePasswordFrm" method="POST" action="/pages/html/postLogin/ChangePassword.jsp" onsubmit="return validate();">
-            <table border="1" cellpadding="10" style="width: 100%; max-width: 600px;">
-                <tr>
-                    <td width="30%"><b>Current Password *:</b></td>
-                    <td width="70%"><input type="password" name="CurrentPassword" size="30" required></td>
-                </tr>
-                <tr>
-                    <td><b>New Password *:</b></td>
-                    <td><input type="password" name="NewPassword" size="30" required></td>
-                </tr>
-                <tr>
-                    <td><b>Confirm New Password *:</b></td>
-                    <td><input type="password" name="ConfirmPassword" size="30" required></td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: center;">
-                        <input type="submit" value="Change Password" name="Change" style="padding: 10px 20px; font-size: 16px;">
-                        <input type="button" value="Cancel" onclick="window.location.href='/pages/html/postLogin/Profile.jsp'" style="padding: 10px 20px; font-size: 16px; margin-left: 10px;">
-                    </td>
-                </tr>
-            </table>
-        </form>
     </body>
 </html>
-

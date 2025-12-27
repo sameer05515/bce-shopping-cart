@@ -1,94 +1,85 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Search Items</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Books - BCE Shopping Cart</title>
         <link rel="stylesheet" href="/pages/lib/css/main.css">
         <script src="/pages/lib/js/SearchItems.js"></script>
     </head>
 
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO"%>
-        <%@ page language="java" import="java.util.*"%>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>🔍 Search Books</h1>
+                <h2>Find Your Favorite Books</h2>
+            </div>
 
-        <%
-        @SuppressWarnings("unchecked")
-        List<CategoryDetailsDTO> listCategDet = (List<CategoryDetailsDTO>) request.getAttribute("categories");
-        if (listCategDet == null) {
-            listCategDet = new ArrayList<>();
-        }
-        %>
+            <div class="nav-bar">
+                <div class="nav-links">
+                    <a href="/pages/html/postLogin/Profile.jsp">👤 My Profile</a>
+                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
+                </div>
+            </div>
 
-        <form name="searchItemsFrm" method="POST" action="/pages/html/postLogin/Search.jsp">
-            <span style="text-align: center;">Search Books</span>
+            <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO"%>
+            <%@ page language="java" import="java.util.*"%>
 
-            <table>
-                <tr>
-                    <td width="17%" height="25">
-                        <input type="radio" value="Category" checked name="R1">
-                    </td>
-                    <td width="32%" height="25">Search By Category</td>
-                    <td width="51%" height="25">
-                        <select name="BookCategory" size="1">
-                            <option value="Select" selected>Select Category</option>
-                            <%
-                            for(CategoryDetailsDTO d:listCategDet){
-                                %>
-                                <option value="<%=d.getCategoryName()%>">
-                                    <%=d.getCategoryName()%>
-                                </option>
-                                <%
-                            }
+            <%
+            @SuppressWarnings("unchecked")
+            List<CategoryDetailsDTO> listCategDet = (List<CategoryDetailsDTO>) request.getAttribute("categories");
+            if (listCategDet == null) {
+                listCategDet = new ArrayList<>();
+            }
+            %>
+
+            <form name="searchItemsFrm" method="POST" action="/pages/html/postLogin/Search.jsp" class="search-form">
+                <div class="card-header">Select Search Criteria</div>
+
+                <div class="radio-group">
+                    <input type="radio" id="searchCategory" value="Category" checked name="R1">
+                    <label for="searchCategory"><b>Search By Category</b></label>
+                    <select name="BookCategory" class="form-control" style="max-width: 300px; margin-left: 20px;">
+                        <option value="Select" selected>Select Category</option>
+                        <%
+                        for(CategoryDetailsDTO d:listCategDet){
                             %>
-                        </select>
-                    </td>
-                </tr>
+                            <option value="<%=d.getCategoryName()%>">
+                                <%=d.getCategoryName()%>
+                            </option>
+                            <%
+                        }
+                        %>
+                    </select>
+                </div>
 
-                <tr>
-                    <td width="17%" height="25">
-                        <input type="radio" value="Title" name="R1">
-                    </td>
-                    <td width="32%" height="25">Search By Book Title</td>
-                    <td width="51%" height="25">
-                        <input type="text" name="BookTitle" size="25">
-                    </td>
-                </tr>
+                <div class="radio-group">
+                    <input type="radio" id="searchTitle" value="Title" name="R1">
+                    <label for="searchTitle"><b>Search By Book Title</b></label>
+                    <input type="text" name="BookTitle" class="form-control" 
+                           placeholder="Enter book title" style="max-width: 300px; margin-left: 20px;">
+                </div>
 
-                <tr>
-                    <td width="17%" height="25">
-                        <input type="radio" value="Author" name="R1">
-                    </td>
-                    <td width="32%" height="25">Search By Book Author</td>
-                    <td width="51%" height="25">
-                        <input type="text" name="BookAuthor" size="25">
-                    </td>
-                </tr>
+                <div class="radio-group">
+                    <input type="radio" id="searchAuthor" value="Author" name="R1">
+                    <label for="searchAuthor"><b>Search By Book Author</b></label>
+                    <input type="text" name="BookAuthor" class="form-control" 
+                           placeholder="Enter author name" style="max-width: 300px; margin-left: 20px;">
+                </div>
 
-                <tr>
-                    <td width="17%" height="25">
-                        <input type="radio" value="Publisher" name="R1">
-                    </td>
-                    <td width="32%" height="25">Search By Book Publisher</td>
-                    <td width="51%" height="25">
-                        <input type="text" name="BookPublisher" size="25">
-                    </td>
-                </tr>
+                <div class="radio-group">
+                    <input type="radio" id="searchPublisher" value="Publisher" name="R1">
+                    <label for="searchPublisher"><b>Search By Book Publisher</b></label>
+                    <input type="text" name="BookPublisher" class="form-control" 
+                           placeholder="Enter publisher name" style="max-width: 300px; margin-left: 20px;">
+                </div>
 
-                <tr>
-                    <td width="17%" height="25">
-                        
-                    </td>
-                    <td width="32%" height="25">
-                        <input type="button" value="Search" name="Search" onclick="startSearch();">
-                    </td>
-                    <td width="51%" height="25">
-                        <a href="/pages/html/postLogin/Profile.jsp">My Profile</a> | 
-                        <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
-                    </td>
-                </tr>
-            </table>
-
-        </form>
-
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="startSearch();">
+                        🔍 Search
+                    </button>
+                </div>
+            </form>
+        </div>
     </body>
 </html>
-

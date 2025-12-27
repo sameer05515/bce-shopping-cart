@@ -1,131 +1,163 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>New User Registration</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up - BCE Shopping Cart</title>
         <link rel="stylesheet" href="../../lib/css/main.css">
         <script src="../../lib/js/NewUser.js"></script>
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <form name="newUserFrm" method="POST">
-            <p>New User Registration</p>
-            <p style="color: #ff0000;"> ( Field marked * are mandatory) </p>
-            <div style="text-align: left;">
-                <table>
-                    <tr>
-                        <td width="23%"><b>User *:</b></td>
-                        <td width="77%"> <input type="text" name="UserName" size="20" tabindex="1"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%"><b>Password *:</b></td>
-                        <td width="77%"> <input type="password" name="Password" size="20" tabindex="2"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%"><b>Confirm Password *:</b></td>
-                        <td width="77%"> <input type="password" name="Password2" size="20" tabindex="3"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%"><b>First Name *:</b></td>
-                        <td width="77%"> <input type="text" name="FirstName" size="20" tabindex="4"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%"><b>Middle Name :</b></td>
-                        <td width="77%"> <input type="text" name="MiddleName" size="20" tabindex="5"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%"><b>Last Name *:</b></td>
-                        <td width="77%"> <input type="text" name="LastName" size="20" tabindex="6"></td>
-                    </tr>
-                </table>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>✍️ New User Registration</h1>
+                <h2>Create Your Account</h2>
             </div>
 
-            <div style="text-align: center;">
-                <table>
-                    <tr>
-                        <td width="23%">Address1 *:</td>
-                        <td width="77%"><input type="text" name="Address1" size="43" tabindex="7"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%">Address2 :</td>
-                        <td width="77%"><input type="text" name="Address2" size="43" tabindex="8"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%">City *:</td>
-                        <td width="77%"><input type="text" name="City" size="20" tabindex="9"></td>
-                    </tr>
-                    <tr>
-                        <td width="23%">State *:</td>
-                        <td width="77%">
-                            <select name="State" size="1" tabindex="10">
-                                <option selected value="Select State">Select State</option>
-                                <option>Andra Pradesh</option>
-                                <option>Arunachal Pradesh</option>
-                                <option>Assam</option>
-                                <option>Bihar</option>
-                                <option>Chhattisgarh</option>
-                                <option>Goa</option>
-                                <option>Gujarat</option>
-                                <option>Haryana</option>
-                                <option>Himachal Pradesh</option>
-                                <option>Jammu and Kashmir</option>
-                                <option>Jharkhand</option>
-                                <option>Karnataka</option>
-                                <option>Kerala</option>
-                                <option>Madya Pradesh</option>
-                                <option>Maharashtra</option>
-                                <option>Manipur</option>
-                                <option>Meghalaya</option>
-                                <option>Mizoram</option>
-                                <option>Nagaland</option>
-                                <option>Orissa</option>
-                                <option>Punjab</option>
-                                <option>Rajasthan</option>
-                                <option>Sikkim</option>
-                                <option>Tamil Nadu</option>
-                                <option>Telagana</option>
-                                <option>Tripura</option>
-                                <option>Uttaranchal</option>
-                                <option>Uttar Pradesh</option>
-                                <option>West Bengal</option>
-                                <option>Andaman and Nicobar Islands</option>
-                                <option>Chandigarh</option>
-                                <option>Dadar and Nagar Haveli</option>
-                                <option>Daman and Diu</option>
-                                <option>Delhi</option>
-                                <option>Lakshadeep</option>
-                                <option>Pondicherry</option>                                                                
-                            </select>
-                        </td>
-
-                        <tr>
-                            <td width="23%">Pin Code *:</td>
-                            <td width="77%"><input type="text" name="PinCode" size="20" tabindex="11"></td>
-                        </tr>
-
-                        <tr>
-                            <td width="23%">Email ID *:</td>
-                            <td width="77%"><input type="text" name="Email" size="20" tabindex="12"></td>
-                        </tr>
-
-                        <tr>
-                            <td width="23%">Phone Number *:</td>
-                            <td width="77%"><input type="text" name="Phone" size="20" tabindex="13"></td>
-                        </tr>
-                        <tr>
-                            <td width="23%" height="1"></td>
-                            <td width="77%" height="1"></td>
-                        </tr>
-                        <tr>
-                            <td width="23%" height="21"></td>
-                            <td width="77%" height="21">
-                                <b>
-                                    <input type="submit" value="Submit" name="B1" onclick="validate();" tabindex="13">
-                                </b>
-                            </td>
-                        </tr>
-                    </tr>
-                </table>
+            <div class="password-requirements">
+                <h4>Password Requirements:</h4>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains at least one uppercase letter (A-Z)</li>
+                    <li>Contains at least one lowercase letter (a-z)</li>
+                    <li>Contains at least one digit (0-9)</li>
+                    <li>Contains at least one special character (@$!%*?&)</li>
+                </ul>
             </div>
 
-        </form>
+            <form name="newUserFrm" method="POST" class="card">
+                <p style="color: #e74c3c; margin-bottom: 20px; font-weight: 600;">
+                    <span style="color: #e74c3c;">*</span> Fields marked with asterisk are mandatory
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="UserName" class="required">Username</label>
+                        <input type="text" id="UserName" name="UserName" class="form-control" 
+                               placeholder="Choose a username" tabindex="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Email" class="required">Email ID</label>
+                        <input type="email" id="Email" name="Email" class="form-control" 
+                               placeholder="your.email@example.com" tabindex="12" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Password" class="required">Password</label>
+                        <input type="password" id="Password" name="Password" class="form-control" 
+                               placeholder="Enter strong password" tabindex="2" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Password2" class="required">Confirm Password</label>
+                        <input type="password" id="Password2" name="Password2" class="form-control" 
+                               placeholder="Re-enter password" tabindex="3" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="FirstName" class="required">First Name</label>
+                        <input type="text" id="FirstName" name="FirstName" class="form-control" 
+                               placeholder="First Name" tabindex="4" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="MiddleName">Middle Name</label>
+                        <input type="text" id="MiddleName" name="MiddleName" class="form-control" 
+                               placeholder="Middle Name (optional)" tabindex="5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LastName" class="required">Last Name</label>
+                        <input type="text" id="LastName" name="LastName" class="form-control" 
+                               placeholder="Last Name" tabindex="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Phone" class="required">Phone Number</label>
+                        <input type="text" id="Phone" name="Phone" class="form-control" 
+                               placeholder="10-12 digits" tabindex="13" required>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="Address1" class="required">Address Line 1</label>
+                        <input type="text" id="Address1" name="Address1" class="form-control" 
+                               placeholder="Street address, P.O. box" tabindex="7" required>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="Address2">Address Line 2</label>
+                        <input type="text" id="Address2" name="Address2" class="form-control" 
+                               placeholder="Apartment, suite, unit, building, floor, etc. (optional)" tabindex="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="City" class="required">City</label>
+                        <input type="text" id="City" name="City" class="form-control" 
+                               placeholder="City" tabindex="9" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="State" class="required">State</label>
+                        <select id="State" name="State" class="form-control" tabindex="10" required>
+                            <option value="Select State" selected>Select State</option>
+                            <option>Andra Pradesh</option>
+                            <option>Arunachal Pradesh</option>
+                            <option>Assam</option>
+                            <option>Bihar</option>
+                            <option>Chhattisgarh</option>
+                            <option>Goa</option>
+                            <option>Gujarat</option>
+                            <option>Haryana</option>
+                            <option>Himachal Pradesh</option>
+                            <option>Jammu and Kashmir</option>
+                            <option>Jharkhand</option>
+                            <option>Karnataka</option>
+                            <option>Kerala</option>
+                            <option>Madya Pradesh</option>
+                            <option>Maharashtra</option>
+                            <option>Manipur</option>
+                            <option>Meghalaya</option>
+                            <option>Mizoram</option>
+                            <option>Nagaland</option>
+                            <option>Orissa</option>
+                            <option>Punjab</option>
+                            <option>Rajasthan</option>
+                            <option>Sikkim</option>
+                            <option>Tamil Nadu</option>
+                            <option>Telagana</option>
+                            <option>Tripura</option>
+                            <option>Uttaranchal</option>
+                            <option>Uttar Pradesh</option>
+                            <option>West Bengal</option>
+                            <option>Andaman and Nicobar Islands</option>
+                            <option>Chandigarh</option>
+                            <option>Dadar and Nagar Haveli</option>
+                            <option>Daman and Diu</option>
+                            <option>Delhi</option>
+                            <option>Lakshadeep</option>
+                            <option>Pondicherry</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PinCode" class="required">Pin Code</label>
+                        <input type="text" id="PinCode" name="PinCode" class="form-control" 
+                               placeholder="6-digit pin code" tabindex="11" required>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" onclick="validate();" tabindex="14">
+                        Create Account
+                    </button>
+                    <a href="Login.html" class="btn btn-secondary">Cancel</a>
+                </div>
+
+                <div class="text-center mt-20">
+                    <p>Already have an account? <a href="Login.html">Login here</a></p>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

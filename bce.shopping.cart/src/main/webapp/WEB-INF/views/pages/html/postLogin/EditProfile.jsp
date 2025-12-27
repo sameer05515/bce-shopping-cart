@@ -1,74 +1,105 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Edit Profile</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Profile - BCE Shopping Cart</title>
         <link rel="stylesheet" href="/pages/lib/css/main.css">
         <script src="/pages/lib/js/EditProfile.js"></script>
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO"%>
-        
-        <%
-            UserProfileDTO profile = (UserProfileDTO) request.getAttribute("profile");
-            String error = (String) request.getAttribute("error");
-        %>
-        
-        <div style="text-align: right; margin: 10px;">
-            <a href="/pages/html/postLogin/Profile.jsp">Back to Profile</a> | 
-            <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
-        </div>
-        
-        <% if (error != null) { %>
-            <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px;">
-                <%= error %>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>✏️ Edit Profile</h1>
             </div>
-        <% } %>
+
+            <div class="nav-bar">
+                <div class="nav-links">
+                    <a href="/pages/html/postLogin/Profile.jsp">← Back to Profile</a>
+                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🏠 Home</a>
+                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
+                </div>
+            </div>
         
-        <h2>Edit Profile</h2>
-        
-        <% if (profile != null) { %>
-            <form name="editProfileFrm" method="POST" action="/pages/html/postLogin/UpdateProfile.jsp" onsubmit="return validate();">
-                <table border="1" cellpadding="10" style="width: 100%; max-width: 800px;">
-                    <tr>
-                        <td width="25%"><b>Username:</b></td>
-                        <td width="75%"><%= profile.getUserName() %> (cannot be changed)</td>
-                    </tr>
-                    <tr>
-                        <td><b>First Name *:</b></td>
-                        <td><input type="text" name="FirstName" value="<%= profile.getFirstName() %>" size="30" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>Middle Name:</b></td>
-                        <td><input type="text" name="MiddleName" value="<%= profile.getMiddleName() != null ? profile.getMiddleName() : "" %>" size="30"></td>
-                    </tr>
-                    <tr>
-                        <td><b>Last Name *:</b></td>
-                        <td><input type="text" name="LastName" value="<%= profile.getLastName() %>" size="30" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>Email *:</b></td>
-                        <td><input type="email" name="Email" value="<%= profile.getEmail() %>" size="30" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>Phone *:</b></td>
-                        <td><input type="text" name="Phone" value="<%= profile.getPhone() %>" size="30" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>Address 1 *:</b></td>
-                        <td><input type="text" name="Address1" value="<%= profile.getAddress1() %>" size="50" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>Address 2:</b></td>
-                        <td><input type="text" name="Address2" value="<%= profile.getAddress2() != null ? profile.getAddress2() : "" %>" size="50"></td>
-                    </tr>
-                    <tr>
-                        <td><b>City *:</b></td>
-                        <td><input type="text" name="City" value="<%= profile.getCity() %>" size="30" required></td>
-                    </tr>
-                    <tr>
-                        <td><b>State *:</b></td>
-                        <td>
-                            <select name="State" size="1" required>
+            <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO"%>
+            
+            <%
+                UserProfileDTO profile = (UserProfileDTO) request.getAttribute("profile");
+                String error = (String) request.getAttribute("error");
+            %>
+            
+            <% if (error != null) { %>
+                <div class="alert alert-error">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+            <% } %>
+            
+            <% if (profile != null) { %>
+                <form name="editProfileFrm" method="POST" action="/pages/html/postLogin/UpdateProfile.jsp" 
+                      onsubmit="return validate();" class="card">
+                    <p style="color: #e74c3c; margin-bottom: 20px; font-weight: 600;">
+                        <span style="color: #e74c3c;">*</span> Fields marked with asterisk are mandatory
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label><b>Username:</b></label>
+                            <div style="padding: 12px 15px; background: #f8f9fa; border-radius: 8px; color: #6c757d;">
+                                <%= profile.getUserName() %> <small>(cannot be changed)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="FirstName" class="required">First Name</label>
+                            <input type="text" id="FirstName" name="FirstName" class="form-control" 
+                                   value="<%= profile.getFirstName() %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="MiddleName">Middle Name</label>
+                            <input type="text" id="MiddleName" name="MiddleName" class="form-control" 
+                                   value="<%= profile.getMiddleName() != null ? profile.getMiddleName() : "" %>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LastName" class="required">Last Name</label>
+                            <input type="text" id="LastName" name="LastName" class="form-control" 
+                                   value="<%= profile.getLastName() %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Email" class="required">Email</label>
+                            <input type="email" id="Email" name="Email" class="form-control" 
+                                   value="<%= profile.getEmail() %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Phone" class="required">Phone</label>
+                            <input type="text" id="Phone" name="Phone" class="form-control" 
+                                   value="<%= profile.getPhone() %>" required>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="Address1" class="required">Address Line 1</label>
+                            <input type="text" id="Address1" name="Address1" class="form-control" 
+                                   value="<%= profile.getAddress1() %>" required>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="Address2">Address Line 2</label>
+                            <input type="text" id="Address2" name="Address2" class="form-control" 
+                                   value="<%= profile.getAddress2() != null ? profile.getAddress2() : "" %>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="City" class="required">City</label>
+                            <input type="text" id="City" name="City" class="form-control" 
+                                   value="<%= profile.getCity() %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="State" class="required">State</label>
+                            <select id="State" name="State" class="form-control" required>
                                 <option value="<%= profile.getState() %>" selected><%= profile.getState() %></option>
                                 <option value="Andra Pradesh">Andra Pradesh</option>
                                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -107,23 +138,25 @@
                                 <option value="Lakshadeep">Lakshadeep</option>
                                 <option value="Pondicherry">Pondicherry</option>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Pin Code *:</b></td>
-                        <td><input type="text" name="PinCode" value="<%= profile.getPinCode() %>" size="10" required></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="text-align: center;">
-                            <input type="submit" value="Update Profile" name="Update" style="padding: 10px 20px; font-size: 16px;">
-                            <input type="button" value="Cancel" onclick="window.location.href='/pages/html/postLogin/Profile.jsp'" style="padding: 10px 20px; font-size: 16px; margin-left: 10px;">
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        <% } else { %>
-            <p style="color: red;">Profile not found.</p>
-        <% } %>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PinCode" class="required">Pin Code</label>
+                            <input type="text" id="PinCode" name="PinCode" class="form-control" 
+                                   value="<%= profile.getPinCode() %>" required>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">💾 Update Profile</button>
+                        <a href="/pages/html/postLogin/Profile.jsp" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            <% } else { %>
+                <div class="alert alert-error">
+                    Profile not found.
+                </div>
+            <% } %>
+        </div>
     </body>
 </html>
-

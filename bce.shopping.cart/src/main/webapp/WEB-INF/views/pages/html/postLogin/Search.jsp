@@ -1,96 +1,129 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Search Results</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Results - BCE Shopping Cart</title>
         <link rel="stylesheet" href="/pages/lib/css/main.css">
         <script src="/pages/lib/js/SearchItems.js"></script>
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <br>
-        <div style="text-align: right; margin: 10px;">
-            <a href="/pages/html/postLogin/Profile.jsp">My Profile</a> | 
-            <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
-        </div>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>📚 Search Results</h1>
+            </div>
 
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <%@ page language="java" import="java.util.*"%>
-        <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.SearchedBookCategories"%>
-        <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO"%>
+            <div class="nav-bar">
+                <div class="nav-links">
+                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🔍 New Search</a>
+                    <a href="/pages/html/postLogin/Profile.jsp">👤 My Profile</a>
+                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
+                </div>
+            </div>
 
-        <%
-            String user_src = (String) session.getAttribute("user");
-            @SuppressWarnings("unchecked")
-            List<SearchedBookCategories> listSearchedBookCategories = 
-                (List<SearchedBookCategories>) request.getAttribute("searchResults");
-            @SuppressWarnings("unchecked")
-            List<CategoryDetailsDTO> listCategDet = 
-                (List<CategoryDetailsDTO>) request.getAttribute("categories");
-            Integer counter = (Integer) request.getAttribute("counter");
-            
-            if (listSearchedBookCategories == null) {
-                listSearchedBookCategories = new ArrayList<>();
-            }
-            if (listCategDet == null) {
-                listCategDet = new ArrayList<>();
-            }
-            if (counter == null) {
-                counter = 0;
-            }
-            
-            if(user_src != null){
-                    %>
-                    <form action="/pages/html/postLogin/Inter_Cart.jsp" name="cart">
-                        <table border="1">
-                            <tr>
-                                <td>S.No</td>
-                                <td>Select</td>
-                                <td>Book Name</td>
-                                <td>Author Name</td>
-                                <td>Publisher</td>
-                                <td>Edition</td>
-                                <td>Price (in Rs.)</td>
-                                <td>Quantity Available (Nos.)</td>
-                                <td>Description</td>
-                                <td>Category</td>
-                            </tr>
-                            <%
-                                int count = 0;
+            <%@ page language="java" import="java.util.*"%>
+            <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.SearchedBookCategories"%>
+            <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO"%>
+
+            <%
+                String user_src = (String) session.getAttribute("user");
+                @SuppressWarnings("unchecked")
+                List<SearchedBookCategories> listSearchedBookCategories = 
+                    (List<SearchedBookCategories>) request.getAttribute("searchResults");
+                @SuppressWarnings("unchecked")
+                List<CategoryDetailsDTO> listCategDet = 
+                    (List<CategoryDetailsDTO>) request.getAttribute("categories");
+                Integer counter = (Integer) request.getAttribute("counter");
+                
+                if (listSearchedBookCategories == null) {
+                    listSearchedBookCategories = new ArrayList<>();
+                }
+                if (listCategDet == null) {
+                    listCategDet = new ArrayList<>();
+                }
+                if (counter == null) {
+                    counter = 0;
+                }
+                
+                if(user_src != null){
+                    if(listSearchedBookCategories.isEmpty()) {
+            %>
+                        <div class="alert alert-info">
+                            <strong>No Results Found:</strong> Please try a different search criteria.
+                        </div>
+            <%
+                    } else {
+            %>
+                        <div class="card">
+                            <div class="card-header">
+                                Found <%= listSearchedBookCategories.size() %> Book(s)
+                            </div>
+                            
+                            <form action="/pages/html/postLogin/Inter_Cart.jsp" name="cart">
+                                <div class="table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Select</th>
+                                                <th>Book Name</th>
+                                                <th>Author Name</th>
+                                                <th>Publisher</th>
+                                                <th>Edition</th>
+                                                <th>Price (₹)</th>
+                                                <th>Quantity Available</th>
+                                                <th>Description</th>
+                                                <th>Category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <%
+                                                int count = 0;
+                                                
+                                                for(SearchedBookCategories s : listSearchedBookCategories){
+                                                    count++;
+                                            %>
+                                                    <tr>
+                                                        <td><%= count %></td>
+                                                        <td>
+                                                            <input type="checkbox" name="chk<%= count %>" 
+                                                                   value="<%= s.getBookId() %>">
+                                                        </td>
+                                                        <td><strong><%= s.getTitle() %></strong></td>
+                                                        <td><%= s.getAuthor() %></td>
+                                                        <td><%= s.getPublisher() %></td>
+                                                        <td><%= s.getEdition() %></td>
+                                                        <td><strong style="color: #28a745;">₹<%= s.getPrice() %></strong></td>
+                                                        <td><%= s.getQuantity() %></td>
+                                                        <td><%= s.getDescription() %></td>
+                                                        <td><%= s.getCategoryName() %></td>
+                                                    </tr>
+                                            <%
+                                                }
+                                                session.setAttribute("ctr_val", String.valueOf(count));
+                                            %>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 
-                                for(SearchedBookCategories s : listSearchedBookCategories){
-                                	count++;
-                                    out.println("<tr>");
-                                    out.println("<td>" + count + "</td>");                                    
-                                    out.println("<td>" + "<input type=\"checkbox\" name=\"chk" + count + "\" value=\"" + s.getBookId() + "\">" + " </td>");
-                                    out.println("<td>" + (s.getTitle()) + "</td>");
-                                    out.println("<td>" + (s.getAuthor()) + "</td>");
-                                    out.println("<td>" + (s.getPublisher()) + "</td>");
-                                    out.println("<td>" + (s.getEdition()) + "</td>");
-                                    out.println("<td>" + (s.getPrice()) + "</td>");
-                                    out.println("<td>" + (s.getQuantity()) + "</td>");
-                                    out.println("<td>" + (s.getDescription()) + "</td>");
-                                    out.println("<td>" + (s.getCategoryName()) + "</td>");
-                                    out.println("</tr>");
-                                }
-                                session.setAttribute("ctr_val", String.valueOf(count));
-                                
-                            %>
-                        </table>
-                        <br>
-                        <input type="submit" value=" Add to Cart " name="Add">
-                    </form>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success">
+                                        🛒 Add Selected to Cart
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
-                    <hr>
+                        <hr style="margin: 30px 0; border: none; border-top: 2px solid #e0e0e0;">
 
-                    <p><font size="5">Search More</font></p>
-                    <form action="/pages/html/postLogin/Search.jsp" name="newsrc" method="POST">
-                        <table border="1">
-                            <tr>
-                                <td>
-                                    <input type="radio" name="R1" value="Category" checked>
-                                </td>
-
-                                <td>
-                                    <select name="BookCategory" size="1">
+                        <div class="card">
+                            <div class="card-header">🔍 Search More Books</div>
+                            
+                            <form action="/pages/html/postLogin/Search.jsp" name="newsrc" method="POST" class="search-form">
+                                <div class="radio-group">
+                                    <input type="radio" id="newSearchCategory" name="R1" value="Category" checked>
+                                    <label for="newSearchCategory">Search By Category</label>
+                                    <select name="BookCategory" class="form-control" style="max-width: 300px; margin-left: 20px;">
                                         <option value="Select" selected>Select Category</option>
                                         <%
                                         for(CategoryDetailsDTO d:listCategDet){
@@ -102,60 +135,47 @@
                                         }
                                         %>
                                     </select>
-                                </td>
-                            </tr>
+                                </div>
 
-                            <tr>
-                                <td>
-                                    <input type="radio" name="R1" value="Title">
-                                </td>
-                                <td>
-                                    Search by Book Title
-                                </td>
-                                <td><input type="text" name="BookTitle" size="25"></td>
-                            </tr>
+                                <div class="radio-group">
+                                    <input type="radio" id="newSearchTitle" name="R1" value="Title">
+                                    <label for="newSearchTitle">Search By Book Title</label>
+                                    <input type="text" name="BookTitle" class="form-control" 
+                                           placeholder="Enter book title" style="max-width: 300px; margin-left: 20px;">
+                                </div>
 
-                            <tr>
-                                <td>
-                                    <input type="radio" name="R1" value="Author">
-                                </td>
-                                <td>
-                                    Search by Book Author
-                                </td>
-                                <td><input type="text" name="BookAuthor" size="25"></td>
-                            </tr>
+                                <div class="radio-group">
+                                    <input type="radio" id="newSearchAuthor" name="R1" value="Author">
+                                    <label for="newSearchAuthor">Search By Book Author</label>
+                                    <input type="text" name="BookAuthor" class="form-control" 
+                                           placeholder="Enter author name" style="max-width: 300px; margin-left: 20px;">
+                                </div>
 
-                            <tr>
-                                <td>
-                                    <input type="radio" name="R1" value="Publisher">
-                                </td>
-                                <td>
-                                    Search by Book Publisher
-                                </td>
-                                <td><input type="text" name="BookPublisher" size="25"></td>
-                            </tr>
+                                <div class="radio-group">
+                                    <input type="radio" id="newSearchPublisher" name="R1" value="Publisher">
+                                    <label for="newSearchPublisher">Search By Book Publisher</label>
+                                    <input type="text" name="BookPublisher" class="form-control" 
+                                           placeholder="Enter publisher name" style="max-width: 300px; margin-left: 20px;">
+                                </div>
 
-                            <tr>
-                                <td>
-                                    <input type="radio" name="R2" value="A"> Advanced Search
-                                </td>
-                                <td>
-                                    <input type="radio" name="R2" value="N" checked> New Search
-                                </td>
-                                <td>
-                                    <input type="submit" value="Search">
-                                </td>
-                            </tr>
-                        </table>
+                                <div class="radio-group">
+                                    <input type="radio" id="advancedSearch" name="R2" value="A">
+                                    <label for="advancedSearch">Advanced Search</label>
+                                    <input type="radio" id="newSearch" name="R2" value="N" checked style="margin-left: 20px;">
+                                    <label for="newSearch">New Search</label>
+                                </div>
 
-                    </form>
-                    <%
-            }else{
-                response.sendRedirect("/pages/html/preLogin/Unauthorised.html");
-            }
-
-        %>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">🔍 Search</button>
+                                </div>
+                            </form>
+                        </div>
+            <%
+                    }
+                } else {
+                    response.sendRedirect("/pages/html/preLogin/Unauthorised.html");
+                }
+            %>
+        </div>
     </body>
-    
 </html>
-

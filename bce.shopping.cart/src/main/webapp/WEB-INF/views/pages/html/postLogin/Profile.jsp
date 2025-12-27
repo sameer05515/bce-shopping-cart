@@ -1,97 +1,111 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>My Profile</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Profile - BCE Shopping Cart</title>
         <link rel="stylesheet" href="/pages/lib/css/main.css">
     </head>
     <body class="body-style">
-        <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
-        <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO"%>
-        
-        <%
-            UserProfileDTO profile = (UserProfileDTO) request.getAttribute("profile");
-            String error = (String) request.getAttribute("error");
-            String success = (String) request.getAttribute("success");
-        %>
-        
-        <div style="text-align: right; margin: 10px;">
-            <a href="/pages/html/postLogin/SearchCriteria.jsp">Home</a> | 
-            <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
-        </div>
-        
-        <% if (error != null) { %>
-            <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px;">
-                <%= error %>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>👤 My Profile</h1>
             </div>
-        <% } %>
-        
-        <% if (success != null) { %>
-            <div style="color: green; padding: 10px; border: 1px solid green; margin: 10px;">
-                <%= success %>
+
+            <div class="nav-bar">
+                <div class="nav-links">
+                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🏠 Home</a>
+                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
+                </div>
             </div>
-        <% } %>
         
-        <h2>My Profile</h2>
-        
-        <% if (profile != null) { %>
-            <table border="1" cellpadding="10" style="width: 100%; max-width: 800px;">
-                <tr>
-                    <td><b>Username:</b></td>
-                    <td><%= profile.getUserName() %></td>
-                </tr>
-                <tr>
-                    <td><b>First Name:</b></td>
-                    <td><%= profile.getFirstName() %></td>
-                </tr>
-                <tr>
-                    <td><b>Middle Name:</b></td>
-                    <td><%= profile.getMiddleName() != null ? profile.getMiddleName() : "" %></td>
-                </tr>
-                <tr>
-                    <td><b>Last Name:</b></td>
-                    <td><%= profile.getLastName() %></td>
-                </tr>
-                <tr>
-                    <td><b>Email:</b></td>
-                    <td><%= profile.getEmail() %></td>
-                </tr>
-                <tr>
-                    <td><b>Phone:</b></td>
-                    <td><%= profile.getPhone() %></td>
-                </tr>
-                <tr>
-                    <td><b>Address 1:</b></td>
-                    <td><%= profile.getAddress1() %></td>
-                </tr>
-                <tr>
-                    <td><b>Address 2:</b></td>
-                    <td><%= profile.getAddress2() != null ? profile.getAddress2() : "" %></td>
-                </tr>
-                <tr>
-                    <td><b>City:</b></td>
-                    <td><%= profile.getCity() %></td>
-                </tr>
-                <tr>
-                    <td><b>State:</b></td>
-                    <td><%= profile.getState() %></td>
-                </tr>
-                <tr>
-                    <td><b>Pin Code:</b></td>
-                    <td><%= profile.getPinCode() %></td>
-                </tr>
-            </table>
+            <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO"%>
             
-            <br>
-            <div>
-                <a href="/pages/html/postLogin/EditProfile.jsp">
-                    <button style="padding: 10px 20px; font-size: 16px;">Edit Profile</button>
-                </a>
-                <a href="/pages/html/postLogin/ChangePassword.jsp">
-                    <button style="padding: 10px 20px; font-size: 16px;">Change Password</button>
-                </a>
-            </div>
-        <% } else { %>
-            <p style="color: red;">Profile not found.</p>
-        <% } %>
+            <%
+                UserProfileDTO profile = (UserProfileDTO) request.getAttribute("profile");
+                String error = (String) request.getAttribute("error");
+                String success = (String) request.getAttribute("success");
+            %>
+            
+            <% if (error != null) { %>
+                <div class="alert alert-error">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+            <% } %>
+            
+            <% if (success != null) { %>
+                <div class="alert alert-success">
+                    <strong>Success:</strong> <%= success %>
+                </div>
+            <% } %>
+            
+            <% if (profile != null) { %>
+                <div class="profile-card">
+                    <div class="card-header">Personal Information</div>
+                    <div class="profile-info">
+                        <div class="profile-label">Username:</div>
+                        <div class="profile-value"><%= profile.getUserName() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">First Name:</div>
+                        <div class="profile-value"><%= profile.getFirstName() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Middle Name:</div>
+                        <div class="profile-value"><%= profile.getMiddleName() != null && !profile.getMiddleName().isEmpty() ? profile.getMiddleName() : "—" %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Last Name:</div>
+                        <div class="profile-value"><%= profile.getLastName() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Email:</div>
+                        <div class="profile-value"><%= profile.getEmail() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Phone:</div>
+                        <div class="profile-value"><%= profile.getPhone() %></div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="card-header">Address Information</div>
+                    <div class="profile-info">
+                        <div class="profile-label">Address Line 1:</div>
+                        <div class="profile-value"><%= profile.getAddress1() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Address Line 2:</div>
+                        <div class="profile-value"><%= profile.getAddress2() != null && !profile.getAddress2().isEmpty() ? profile.getAddress2() : "—" %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">City:</div>
+                        <div class="profile-value"><%= profile.getCity() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">State:</div>
+                        <div class="profile-value"><%= profile.getState() %></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-label">Pin Code:</div>
+                        <div class="profile-value"><%= profile.getPinCode() %></div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <a href="/pages/html/postLogin/EditProfile.jsp" class="btn btn-primary">
+                        ✏️ Edit Profile
+                    </a>
+                    <a href="/pages/html/postLogin/ChangePassword.jsp" class="btn btn-secondary">
+                        🔒 Change Password
+                    </a>
+                </div>
+            <% } else { %>
+                <div class="alert alert-error">
+                    Profile not found.
+                </div>
+            <% } %>
+        </div>
     </body>
 </html>
 
