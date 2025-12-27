@@ -45,17 +45,23 @@
                                 
                                 <dt class="col-sm-4">Status:</dt>
                                 <dd class="col-sm-8">
-                                    <span class="badge" 
-                                          th:classappend="${order.status == 'PENDING'} ? 'bg-warning text-dark' : 
-                                                          (order.status == 'CONFIRMED') ? 'bg-success' : 
-                                                          (order.status == 'CANCELLED') ? 'bg-danger' : 'bg-info'">
-                                        <span th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
-                                    </span>
+                                        <span th:if="${order.status == 'PENDING'}" class="badge bg-warning text-dark">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status == 'CONFIRMED'}" class="badge bg-success">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status == 'CANCELLED'}" class="badge bg-danger">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status != 'PENDING' and order.status != 'CONFIRMED' and order.status != 'CANCELLED'}" class="badge bg-info">
+                                            <span th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
+                                        </span>
                                 </dd>
                                 
                                 <dt class="col-sm-4">Total Amount:</dt>
                                 <dd class="col-sm-8">
-                                    <strong class="text-success fs-5">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)}">0.00</span></strong>
+                                    <strong class="text-success fs-5">₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong>
                                 </dd>
                                 
                                 <dt class="col-sm-4" th:if="${order.orderNotes != null and !order.orderNotes.isEmpty()}">Order Notes:</dt>
@@ -88,7 +94,7 @@
                                         <tbody>
                                             <tr th:each="detail : ${order.orderDetails}">
                                                 <td>
-                                                    <strong th:text="${detail.bookTitle != null and !detail.bookTitle.isEmpty() ? detail.bookTitle : 'Book ID: ' + detail.bookId}">Book Title</strong><br>
+                                                    <strong th:text="${detail.bookTitle != null and !detail.bookTitle.isEmpty() ? detail.bookTitle : |Book ID: ${detail.bookId}|}">Book Title</strong><br>
                                                     <small class="text-muted" th:if="${detail.bookAuthor != null and !detail.bookAuthor.isEmpty()}">
                                                         by <span th:text="${detail.bookAuthor}">Author</span>
                                                     </small>

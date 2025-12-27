@@ -60,12 +60,18 @@
                                         <i class="bi bi-calendar"></i> 
                                         <span th:text="${order.orderDate != null ? #dates.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
                                     </td>
-                                    <td><strong class="text-success">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)}">0.00</span></strong></td>
+                                    <td><strong class="text-success">₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong></td>
                                     <td>
-                                        <span class="badge" 
-                                              th:classappend="${order.status == 'PENDING'} ? 'bg-warning text-dark' : 
-                                                              (order.status == 'CONFIRMED') ? 'bg-success' : 
-                                                              (order.status == 'CANCELLED') ? 'bg-danger' : 'bg-info'">
+                                        <span th:if="${order.status == 'PENDING'}" class="badge bg-warning text-dark">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status == 'CONFIRMED'}" class="badge bg-success">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status == 'CANCELLED'}" class="badge bg-danger">
+                                            <span th:text="${order.status}">Status</span>
+                                        </span>
+                                        <span th:if="${order.status != 'PENDING' and order.status != 'CONFIRMED' and order.status != 'CANCELLED'}" class="badge bg-info">
                                             <span th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
                                         </span>
                                     </td>

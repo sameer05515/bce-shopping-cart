@@ -29,7 +29,7 @@
                                th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'Cart')} ? 'active' : ''">
                                 <i class="bi bi-cart"></i> Cart
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                                      th:if="${session.cart != null and #lists.size(session.cart) > 0}" 
+                                      th:if="${session.cart != null}" 
                                       th:text="${#lists.size(session.cart)}">0</span>
                             </a>
                         </li>
