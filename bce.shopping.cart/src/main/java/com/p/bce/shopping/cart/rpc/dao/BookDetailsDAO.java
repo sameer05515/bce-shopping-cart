@@ -149,5 +149,84 @@ public class BookDetailsDAO extends AbstractDAO {
 			return new ArrayList<BookDetailDTO>();
 		}
 	}
+	
+	/**
+	 * Get books with low stock (quantity <= threshold)
+	 */
+	public List<BookDetailDTO> getLowStockBooks(int threshold) {
+		try {
+			return jdbcTemplate.query(
+					"SELECT b.BookId, b.CategoryId, b.Title, b.author, b.publisher, b.edition, b.price, b.quantity, b.description, " +
+					"c.CategoryName FROM book_details b LEFT JOIN category_details c ON b.CategoryId = c.CategoryId " +
+					"WHERE b.quantity <= ? ORDER BY b.quantity ASC",
+					new RowMapper<BookDetailDTO>() {
+						@Override
+						public BookDetailDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+							BookDetailDTO book = new BookDetailDTO(
+									rs.getInt("BookId"),
+									rs.getInt("CategoryId"),
+									rs.getString("Title"),
+									rs.getString("author"),
+									rs.getString("publisher"),
+									rs.getString("edition"),
+									rs.getDouble("price"),
+									rs.getInt("quantity"),
+									rs.getString("description"));
+							book.setCategoryName(rs.getString("CategoryName"));
+							return book;
+						}
+					},
+					threshold);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Get total inventory value (sum of price * quantity for all books)
+	 */
+	public double getTotalInventoryValue() {
+		try {
+			Double total = jdbcTemplate.queryForObject(
+					"SELECT COALESCE(SUM(price * quantity), 0) FROM book_details",
+					Double.class);
+			return total != null ? total : 0.0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0.0;
+		}
+	}
+	
+	/**
+	 * Get total stock quantity
+	 */
+	public int getTotalStockQuantity() {
+		try {
+			Integer total = jdbcTemplate.queryForObject(
+					"SELECT COALESCE(SUM(quantity), 0) FROM book_details",
+					Integer.class);
+			return total != null ? total : 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
+	
+	/**
+	 * Get count of low stock books
+	 */
+	public int getLowStockCount(int threshold) {
+		try {
+			Integer count = jdbcTemplate.queryForObject(
+					"SELECT COUNT(*) FROM book_details WHERE quantity <= ?",
+					Integer.class,
+					threshold);
+			return count != null ? count : 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
 
 }

@@ -18,68 +18,221 @@
     <div class="container my-5">
         <div class="page-header mb-4">
             <h1><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+            <p class="text-muted">Overview of your e-commerce platform</p>
         </div>
 
+        <!-- Sales Analytics -->
         <div class="row g-4 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card shadow border-primary">
                     <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-currency-rupee"></i> Total Revenue</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-6 text-primary mb-0">
+                            ₹<span th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 2) : '0.00'}">0.00</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card shadow border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-receipt-cutoff"></i> Total Orders</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-6 text-success mb-0" th:text="${totalOrders != null ? totalOrders : 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card shadow border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-cart-check"></i> Avg Order Value</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-6 text-info mb-0">
+                            ₹<span th:text="${averageOrderValue != null ? #numbers.formatDecimal(averageOrderValue, 0, 2) : '0.00'}">0.00</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card shadow border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-people"></i> Total Users</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-6 text-warning mb-0" th:text="${totalUsers != null ? totalUsers : 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory & Products -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow border-secondary">
+                    <div class="card-header bg-secondary text-white">
                         <h5 class="mb-0"><i class="bi bi-book"></i> Total Books</h5>
                     </div>
                     <div class="card-body text-center">
-                        <h2 class="display-4 text-primary mb-3" th:text="${totalBooks != null ? totalBooks : 0}">0</h2>
-                        <a th:href="@{/admin/books}" class="btn btn-primary">
-                            <i class="bi bi-gear"></i> Manage Books
+                        <h2 class="display-6 text-secondary mb-3" th:text="${totalBooks != null ? totalBooks : 0}">0</h2>
+                        <a th:href="@{/admin/books}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-gear"></i> Manage
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card shadow border-success">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="bi bi-folder"></i> Total Categories</h5>
+                        <h5 class="mb-0"><i class="bi bi-folder"></i> Categories</h5>
                     </div>
                     <div class="card-body text-center">
-                        <h2 class="display-4 text-success mb-3" th:text="${totalCategories != null ? totalCategories : 0}">0</h2>
-                        <a th:href="@{/admin/categories}" class="btn btn-success">
-                            <i class="bi bi-gear"></i> Manage Categories
+                        <h2 class="display-6 text-success mb-3" th:text="${totalCategories != null ? totalCategories : 0}">0</h2>
+                        <a th:href="@{/admin/categories}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-gear"></i> Manage
                         </a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card shadow border-info">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-receipt-cutoff"></i> Orders</h5>
+            
+            <div class="col-md-3">
+                <div class="card shadow border-danger" th:if="${lowStockCount != null and lowStockCount > 0}">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Low Stock</h5>
                     </div>
                     <div class="card-body text-center">
-                        <h2 class="display-4 text-info mb-3">
-                            <i class="bi bi-box-seam"></i>
-                        </h2>
-                        <a th:href="@{/admin/orders}" class="btn btn-info text-white">
-                            <i class="bi bi-gear"></i> Manage Orders
+                        <h2 class="display-6 text-danger mb-3" th:text="${lowStockCount}">0</h2>
+                        <a th:href="@{/admin/books}" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-eye"></i> View
                         </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card shadow border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-box-seam"></i> Inventory Value</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-6 text-primary mb-0">
+                            ₹<span th:text="${totalInventoryValue != null ? #numbers.formatDecimal(totalInventoryValue, 0, 2) : '0.00'}">0.00</span>
+                        </h2>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Recent Orders -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Orders</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${recentOrders == null or recentOrders.isEmpty()}" class="text-center py-4">
+                            <p class="text-muted">No recent orders</p>
+                        </div>
+                        <div th:if="${recentOrders != null and !recentOrders.isEmpty()}">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="order : ${recentOrders}">
+                                            <td><strong>#<span th:text="${order.orderId}">0</span></strong></td>
+                                            <td th:text="${order.userId}">Customer</td>
+                                            <td><strong>₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong></td>
+                                            <td>
+                                                <span th:text="${order.orderDate != null ? #dates.format(order.orderDate, 'MMM dd, yyyy') : 'N/A'}">Date</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info" th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/admin/orders/details(id=${order.orderId})}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Low Stock Alert</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${lowStockBooks == null or lowStockBooks.isEmpty()}" class="text-center py-4">
+                            <p class="text-muted">All items in stock</p>
+                        </div>
+                        <div th:if="${lowStockBooks != null and !lowStockBooks.isEmpty()}">
+                            <div class="list-group list-group-flush">
+                                <div th:each="book : ${lowStockBooks}" class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong th:text="${book.title}">Book Title</strong><br>
+                                            <small class="text-muted">Stock: <span th:text="${book.quantity}">0</span></small>
+                                        </div>
+                                        <a th:href="@{/admin/books/edit(id=${book.bookId})}" class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <a th:href="@{/admin/books/new}" class="btn btn-outline-primary w-100">
+                    <div class="col-md-3">
+                        <a th:href="@{/admin/books/add}" class="btn btn-outline-primary w-100">
                             <i class="bi bi-plus-circle"></i> Add New Book
                         </a>
                     </div>
-                    <div class="col-md-6">
-                        <a th:href="@{/admin/categories/new}" class="btn btn-outline-success w-100">
+                    <div class="col-md-3">
+                        <a th:href="@{/admin/categories/add}" class="btn btn-outline-success w-100">
                             <i class="bi bi-plus-circle"></i> Add New Category
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a th:href="@{/admin/orders}" class="btn btn-outline-info w-100">
+                            <i class="bi bi-receipt"></i> View All Orders
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a th:href="@{/admin/users}" class="btn btn-outline-warning w-100">
+                            <i class="bi bi-people"></i> Manage Users
                         </a>
                     </div>
                 </div>

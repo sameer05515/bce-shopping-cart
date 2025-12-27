@@ -11,6 +11,8 @@ import com.p.bce.shopping.cart.util.PasswordEncoderUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class UserProfileDAO extends AbstractDAO {
@@ -180,6 +182,89 @@ public class UserProfileDAO extends AbstractDAO {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
+		}
+	}
+	
+	/**
+	 * Get all users for admin management
+	 */
+	public List<UserProfileDTO> getAllUsers() {
+		try {
+			return jdbcTemplate.query(
+					"SELECT UserName, FirstName, MiddleName, LastName, Address1, Address2, " +
+					"City, State, PinCode, Email, Phone FROM user_profile ORDER BY UserName",
+					new RowMapper<UserProfileDTO>() {
+						@Override
+						public UserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+							UserProfileDTO dto = new UserProfileDTO();
+							dto.setUserName(rs.getString("UserName"));
+							dto.setFirstName(rs.getString("FirstName"));
+							dto.setMiddleName(rs.getString("MiddleName"));
+							dto.setLastName(rs.getString("LastName"));
+							dto.setAddress1(rs.getString("Address1"));
+							dto.setAddress2(rs.getString("Address2"));
+							dto.setCity(rs.getString("City"));
+							dto.setState(rs.getString("State"));
+							dto.setPincode(rs.getString("PinCode"));
+							dto.setEmail(rs.getString("Email"));
+							dto.setPhone(rs.getString("Phone"));
+							return dto;
+						}
+					});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Search users by username, name, email, or phone
+	 */
+	public List<UserProfileDTO> searchUsers(String searchTerm) {
+		try {
+			String searchPattern = "%" + searchTerm + "%";
+			return jdbcTemplate.query(
+					"SELECT UserName, FirstName, MiddleName, LastName, Address1, Address2, " +
+					"City, State, PinCode, Email, Phone FROM user_profile " +
+					"WHERE UserName LIKE ? OR FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR Phone LIKE ? " +
+					"ORDER BY UserName",
+					new RowMapper<UserProfileDTO>() {
+						@Override
+						public UserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+							UserProfileDTO dto = new UserProfileDTO();
+							dto.setUserName(rs.getString("UserName"));
+							dto.setFirstName(rs.getString("FirstName"));
+							dto.setMiddleName(rs.getString("MiddleName"));
+							dto.setLastName(rs.getString("LastName"));
+							dto.setAddress1(rs.getString("Address1"));
+							dto.setAddress2(rs.getString("Address2"));
+							dto.setCity(rs.getString("City"));
+							dto.setState(rs.getString("State"));
+							dto.setPincode(rs.getString("PinCode"));
+							dto.setEmail(rs.getString("Email"));
+							dto.setPhone(rs.getString("Phone"));
+							return dto;
+						}
+					},
+					searchPattern, searchPattern, searchPattern, searchPattern, searchPattern);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Get total user count
+	 */
+	public int getUserCount() {
+		try {
+			Integer count = jdbcTemplate.queryForObject(
+					"SELECT COUNT(*) FROM user_profile",
+					Integer.class);
+			return count != null ? count : 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
 		}
 	}
 

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details - BCE Shopping Cart</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
+</head>
+<body>
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-person-badge"></i> User Details</h1>
+        </div>
+
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error:</strong> <span th:text="${error}">Error</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${user != null}">
+            <div class="row g-4">
+                <!-- User Information -->
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Personal Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Username:</dt>
+                                <dd class="col-sm-8"><strong th:text="${user.userName}">Username</strong></dd>
+                                
+                                <dt class="col-sm-4">First Name:</dt>
+                                <dd class="col-sm-8" th:text="${user.firstName}">First Name</dd>
+                                
+                                <dt class="col-sm-4">Middle Name:</dt>
+                                <dd class="col-sm-8" th:text="${user.middleName != null and !user.middleName.isEmpty() ? user.middleName : '—'}">Middle Name</dd>
+                                
+                                <dt class="col-sm-4">Last Name:</dt>
+                                <dd class="col-sm-8" th:text="${user.lastName}">Last Name</dd>
+                                
+                                <dt class="col-sm-4">Email:</dt>
+                                <dd class="col-sm-8" th:text="${user.email != null ? user.email : 'N/A'}">Email</dd>
+                                
+                                <dt class="col-sm-4">Phone:</dt>
+                                <dd class="col-sm-8" th:text="${user.phone != null ? user.phone : 'N/A'}">Phone</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Address Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Address Line 1:</dt>
+                                <dd class="col-sm-8" th:text="${user.address1 != null ? user.address1 : 'N/A'}">Address1</dd>
+                                
+                                <dt class="col-sm-4">Address Line 2:</dt>
+                                <dd class="col-sm-8" th:text="${user.address2 != null and !user.address2.isEmpty() ? user.address2 : '—'}">Address2</dd>
+                                
+                                <dt class="col-sm-4">City:</dt>
+                                <dd class="col-sm-8" th:text="${user.city != null ? user.city : 'N/A'}">City</dd>
+                                
+                                <dt class="col-sm-4">State:</dt>
+                                <dd class="col-sm-8" th:text="${user.state != null ? user.state : 'N/A'}">State</dd>
+                                
+                                <dt class="col-sm-4">Pin Code:</dt>
+                                <dd class="col-sm-8" th:text="${user.pinCode != null ? user.pinCode : 'N/A'}">PinCode</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Orders -->
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-receipt"></i> Order History (<span th:text="${userOrders != null ? #lists.size(userOrders) : 0}">0</span>)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${userOrders == null or userOrders.isEmpty()}" class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <p class="text-muted mt-3">This user has no orders yet.</p>
+                    </div>
+                    <div th:if="${userOrders != null and !userOrders.isEmpty()}">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Total Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${userOrders}">
+                                        <td><strong>#<span th:text="${order.orderId}">0</span></strong></td>
+                                        <td>
+                                            <span th:text="${order.orderDate != null ? #dates.format(order.orderDate, 'MMM dd, yyyy') : 'N/A'}">Date</span>
+                                        </td>
+                                        <td><strong>₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong></td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/orders/details(id=${order.orderId})}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Users
+                </a>
+            </div>
+        </div>
+        
+        <div th:if="${user == null}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> User not found.
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
+

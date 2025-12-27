@@ -242,6 +242,101 @@ public class OrderDAO extends AbstractDAO {
     public boolean cancelOrder(int orderId) {
         return updateOrderStatus(orderId, "CANCELLED");
     }
+    
+    /**
+     * Get total revenue (sum of all order amounts)
+     */
+    public BigDecimal getTotalRevenue() {
+        try {
+            BigDecimal total = jdbcTemplate.queryForObject(
+                    "SELECT COALESCE(SUM(totalamount), 0) FROM order_table",
+                    BigDecimal.class);
+            return total != null ? total : BigDecimal.ZERO;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
+    
+    /**
+     * Get total order count
+     */
+    public int getTotalOrderCount() {
+        try {
+            Integer count = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM order_table",
+                    Integer.class);
+            return count != null ? count : 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+    
+    /**
+     * Get average order value
+     */
+    public BigDecimal getAverageOrderValue() {
+        try {
+            BigDecimal avg = jdbcTemplate.queryForObject(
+                    "SELECT COALESCE(AVG(totalamount), 0) FROM order_table",
+                    BigDecimal.class);
+            return avg != null ? avg : BigDecimal.ZERO;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
+    
+    /**
+     * Get orders by status
+     */
+    public int getOrderCountByStatus(String status) {
+        try {
+            Integer count = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM order_table WHERE status = ?",
+                    Integer.class,
+                    status);
+            return count != null ? count : 0;
+        } catch (Exception ex) {
+            // If status column doesn't exist, return 0
+            return 0;
+        }
+    }
+    
+    /**
+     * Get recent orders (last N orders)
+     */
+    public List<OrderDTO> getRecentOrders(int limit) {
+        try {
+            return jdbcTemplate.query(
+                    "SELECT orderid, userid, totalamount, orderdate, status FROM order_table ORDER BY orderid DESC LIMIT ?",
+                    new RowMapper<OrderDTO>() {
+                        @Override
+                        public OrderDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            OrderDTO order = new OrderDTO();
+                            order.setOrderId(rs.getInt("orderid"));
+                            order.setUserId(rs.getString("userid"));
+                            order.setTotalAmount(rs.getBigDecimal("totalamount") != null ? rs.getBigDecimal("totalamount") : BigDecimal.ZERO);
+                            
+                            try {
+                                String dateStr = rs.getString("orderdate");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                                order.setOrderDate(dateFormat.parse(dateStr));
+                            } catch (Exception e) {
+                                order.setOrderDate(new Date());
+                            }
+                            
+                            order.setStatus(rs.getString("status") != null ? rs.getString("status") : "CONFIRMED");
+                            return order;
+                        }
+                    },
+                    limit);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
 }
 

@@ -30,6 +30,40 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
+        <!-- Search and Filter Form -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form method="GET" th:action="@{/admin/orders/search}" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="q" class="form-control" 
+                               placeholder="Search by order ID or customer username..." 
+                               th:value="${searchTerm != null ? searchTerm : ''}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="status" class="form-select">
+                            <option value="ALL">All Statuses</option>
+                            <option value="PENDING" th:selected="${filterStatus == 'PENDING'}">PENDING</option>
+                            <option value="CONFIRMED" th:selected="${filterStatus == 'CONFIRMED'}">CONFIRMED</option>
+                            <option value="PROCESSING" th:selected="${filterStatus == 'PROCESSING'}">PROCESSING</option>
+                            <option value="SHIPPED" th:selected="${filterStatus == 'SHIPPED'}">SHIPPED</option>
+                            <option value="DELIVERED" th:selected="${filterStatus == 'DELIVERED'}">DELIVERED</option>
+                            <option value="CANCELLED" th:selected="${filterStatus == 'CANCELLED'}">CANCELLED</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+                <div th:if="${searchTerm != null or (filterStatus != null and filterStatus != 'ALL')}" class="mt-2">
+                    <a th:href="@{/admin/orders}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-x-circle"></i> Clear Filters
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">All Orders (<span th:text="${orders != null ? #lists.size(orders) : 0}">0</span>)</h5>

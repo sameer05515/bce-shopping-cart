@@ -1,5 +1,7 @@
 package com.p.bce.shopping.cart.rpc.bc;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -135,5 +137,47 @@ public class UserProfileBC {
 	 */
 	public PasswordValidator.ValidationResult validatePasswordStrength(String password) {
 		return passwordValidator.validate(password);
+	}
+	
+	/**
+	 * Get all users for admin management
+	 */
+	public List<UserProfileDTO> getAllUsers() {
+		try {
+			return objUserProfileDAO.getAllUsers();
+		} catch (Exception e) {
+			System.err.println("ERROR in getAllUsers: " + e.getMessage());
+			e.printStackTrace();
+			return new java.util.ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Search users by various criteria
+	 */
+	public List<UserProfileDTO> searchUsers(String searchTerm) {
+		if (searchTerm == null || searchTerm.trim().isEmpty()) {
+			return getAllUsers();
+		}
+		try {
+			return objUserProfileDAO.searchUsers(searchTerm.trim());
+		} catch (Exception e) {
+			System.err.println("ERROR in searchUsers: " + e.getMessage());
+			e.printStackTrace();
+			return new java.util.ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Get total user count
+	 */
+	public int getUserCount() {
+		try {
+			return objUserProfileDAO.getUserCount();
+		} catch (Exception e) {
+			System.err.println("ERROR in getUserCount: " + e.getMessage());
+			e.printStackTrace();
+			return 0;
+		}
 	}
 }

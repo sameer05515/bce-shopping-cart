@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.p.bce.shopping.cart.rpc.bc.BookDetailsBC;
 import com.p.bce.shopping.cart.rpc.bc.CategoryDetailsBC;
+import com.p.bce.shopping.cart.rpc.bc.OrderBC;
+import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
 import com.p.bce.shopping.cart.rpc.pojo.BookDetailDTO;
 import com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO;
+import com.p.bce.shopping.cart.rpc.pojo.OrderDTO;
+import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
 @Controller
 public class AdminController {
@@ -23,6 +30,12 @@ public class AdminController {
 
 	@Autowired
 	private CategoryDetailsBC categoryDetailsBC;
+	
+	@Autowired
+	private OrderBC orderBC;
+	
+	@Autowired
+	private UserProfileBC userProfileBC;
 
 	// ========== Book Management ==========
 
@@ -248,9 +261,153 @@ public class AdminController {
 			return "redirect:/pages/html/preLogin/Unauthorised.html";
 		}
 
-		model.addAttribute("totalBooks", bookDetailsBC.getAllBooks().size());
-		model.addAttribute("totalCategories", categoryDetailsBC.getAllCategoryDetails().size());
+		try {
+			// Basic counts
+			List<BookDetailDTO> allBooks = bookDetailsBC.getAllBooks();
+			model.addAttribute("totalBooks", allBooks != null ? allBooks.size() : 0);
+			model.addAttribute("totalCategories", categoryDetailsBC.getAllCategoryDetails().size());
+			model.addAttribute("totalUsers", userProfileBC.getUserCount());
+			model.addAttribute("totalOrders", orderBC.getTotalOrderCount());
+			
+			// Sales analytics
+			BigDecimal totalRevenue = orderBC.getTotalRevenue();
+			model.addAttribute("totalRevenue", totalRevenue != null ? totalRevenue : BigDecimal.ZERO);
+			BigDecimal avgOrderValue = orderBC.getAverageOrderValue();
+			model.addAttribute("averageOrderValue", avgOrderValue != null ? avgOrderValue : BigDecimal.ZERO);
+			
+			// Inventory analytics
+			model.addAttribute("totalInventoryValue", bookDetailsBC.getTotalInventoryValue());
+			model.addAttribute("totalStockQuantity", bookDetailsBC.getTotalStockQuantity());
+			model.addAttribute("lowStockCount", bookDetailsBC.getLowStockCount(10)); // Threshold: 10
+			model.addAttribute("lowStockBooks", bookDetailsBC.getLowStockBooks(10));
+			
+			// Recent orders
+			model.addAttribute("recentOrders", orderBC.getRecentOrders(5));
+			
+		} catch (Exception e) {
+			System.err.println("ERROR in adminDashboard: " + e.getMessage());
+			e.printStackTrace();
+			// Set defaults on error
+			model.addAttribute("totalBooks", 0);
+			model.addAttribute("totalCategories", 0);
+			model.addAttribute("totalUsers", 0);
+			model.addAttribute("totalOrders", 0);
+			model.addAttribute("totalRevenue", BigDecimal.ZERO);
+			model.addAttribute("averageOrderValue", BigDecimal.ZERO);
+			model.addAttribute("totalInventoryValue", 0.0);
+			model.addAttribute("totalStockQuantity", 0);
+			model.addAttribute("lowStockCount", 0);
+		}
+		
 		return "admin/Dashboard";
+	}
+	
+	// ========== User Management ==========
+	
+	@GetMapping("/admin/users")
+	public String listUsers(
+			@RequestParam(value = "search", required = false) String searchTerm,
+			HttpSession session,
+			Model model) {
+		if (!isAdmin(session)) {
+			return "redirect:/pages/html/preLogin/Unauthorised.html";
+		}
+		
+		try {
+			List<UserProfileDTO> users;
+			if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+				users = userProfileBC.searchUsers(searchTerm);
+				model.addAttribute("searchTerm", searchTerm);
+			} else {
+				users = userProfileBC.getAllUsers();
+			}
+			
+			if (users == null) {
+				users = new java.util.ArrayList<>();
+			}
+			model.addAttribute("users", users);
+			return "admin/UserList";
+		} catch (Exception e) {
+			System.err.println("ERROR in listUsers: " + e.getMessage());
+			e.printStackTrace();
+			model.addAttribute("error", "Error loading users: " + e.getMessage());
+			model.addAttribute("users", new java.util.ArrayList<UserProfileDTO>());
+			return "admin/UserList";
+		}
+	}
+	
+	@GetMapping("/admin/users/details")
+	public String userDetails(
+			@RequestParam("username") String username,
+			HttpSession session,
+			Model model) {
+		if (!isAdmin(session)) {
+			return "redirect:/pages/html/preLogin/Unauthorised.html";
+		}
+		
+		try {
+			UserProfileDTO user = userProfileBC.getUserProfile(username);
+			if (user == null) {
+				return "redirect:/admin/users?error=User not found";
+			}
+			
+			// Get user's orders
+			List<OrderDTO> userOrders = orderBC.getOrdersByUser(username);
+			model.addAttribute("user", user);
+			model.addAttribute("userOrders", userOrders != null ? userOrders : new java.util.ArrayList<>());
+			return "admin/UserDetails";
+		} catch (Exception e) {
+			System.err.println("ERROR in userDetails: " + e.getMessage());
+			e.printStackTrace();
+			return "redirect:/admin/users?error=Error loading user details";
+		}
+	}
+	
+	// ========== Order Management Enhancements ==========
+	
+	@GetMapping("/admin/orders/search")
+	public String searchOrders(
+			@RequestParam(value = "q", required = false) String searchTerm,
+			@RequestParam(value = "status", required = false) String status,
+			HttpSession session,
+			Model model) {
+		if (!isAdmin(session)) {
+			return "redirect:/pages/html/preLogin/Unauthorised.html";
+		}
+		
+		try {
+			List<OrderDTO> orders;
+			if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+				orders = orderBC.searchOrders(searchTerm);
+				model.addAttribute("searchTerm", searchTerm);
+			} else {
+				orders = orderBC.getAllOrders();
+			}
+			
+			// Filter by status if provided
+			if (status != null && !status.trim().isEmpty() && !status.equals("ALL")) {
+				List<OrderDTO> filtered = new java.util.ArrayList<>();
+				for (OrderDTO order : orders) {
+					if (order.getStatus() != null && order.getStatus().equals(status)) {
+						filtered.add(order);
+					}
+				}
+				orders = filtered;
+				model.addAttribute("filterStatus", status);
+			}
+			
+			if (orders == null) {
+				orders = new java.util.ArrayList<>();
+			}
+			model.addAttribute("orders", orders);
+			return "admin/OrderList";
+		} catch (Exception e) {
+			System.err.println("ERROR in searchOrders: " + e.getMessage());
+			e.printStackTrace();
+			model.addAttribute("error", "Error searching orders: " + e.getMessage());
+			model.addAttribute("orders", new java.util.ArrayList<OrderDTO>());
+			return "admin/OrderList";
+		}
 	}
 
 	// ========== Helper Methods ==========

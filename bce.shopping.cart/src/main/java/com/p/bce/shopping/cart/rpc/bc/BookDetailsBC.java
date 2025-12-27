@@ -77,5 +77,57 @@ public class BookDetailsBC {
 	public List<BookDetailDTO> getBooksByCategory(int categoryId) {
 		return objBookDetailsDAO.getBooksByCategory(categoryId);
 	}
+	
+	/**
+	 * Get books with low stock
+	 */
+	public List<BookDetailDTO> getLowStockBooks(int threshold) {
+		try {
+			return objBookDetailsDAO.getLowStockBooks(threshold);
+		} catch (Exception e) {
+			System.err.println("ERROR in getLowStockBooks: " + e.getMessage());
+			e.printStackTrace();
+			return new java.util.ArrayList<>();
+		}
+	}
+	
+	/**
+	 * Get total inventory value
+	 */
+	public double getTotalInventoryValue() {
+		try {
+			return objBookDetailsDAO.getTotalInventoryValue();
+		} catch (Exception e) {
+			System.err.println("ERROR in getTotalInventoryValue: " + e.getMessage());
+			e.printStackTrace();
+			return 0.0;
+		}
+	}
+	
+	/**
+	 * Get total stock quantity
+	 */
+	public int getTotalStockQuantity() {
+		try {
+			return objBookDetailsDAO.getTotalStockQuantity();
+		} catch (Exception e) {
+			System.err.println("ERROR in getTotalStockQuantity: " + e.getMessage());
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	/**
+	 * Get count of low stock books
+	 */
+	public int getLowStockCount(int threshold) {
+		try {
+			return objBookDetailsDAO.getLowStockCount(threshold);
+		} catch (Exception e) {
+			System.err.println("ERROR in getLowStockCount: " + e.getMessage());
+			e.printStackTrace();
+			return 0;
+		}
+	}
 
 }

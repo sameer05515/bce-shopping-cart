@@ -192,6 +192,84 @@ public class OrderBC {
         }
         return orderDAO.updateOrderStatus(orderId, status);
     }
+    
+    /**
+     * Get total revenue
+     */
+    public BigDecimal getTotalRevenue() {
+        try {
+            return orderDAO.getTotalRevenue();
+        } catch (Exception e) {
+            System.err.println("ERROR in getTotalRevenue: " + e.getMessage());
+            e.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
+    
+    /**
+     * Get total order count
+     */
+    public int getTotalOrderCount() {
+        try {
+            return orderDAO.getTotalOrderCount();
+        } catch (Exception e) {
+            System.err.println("ERROR in getTotalOrderCount: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    
+    /**
+     * Get average order value
+     */
+    public BigDecimal getAverageOrderValue() {
+        try {
+            return orderDAO.getAverageOrderValue();
+        } catch (Exception e) {
+            System.err.println("ERROR in getAverageOrderValue: " + e.getMessage());
+            e.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
+    
+    /**
+     * Get recent orders
+     */
+    public List<OrderDTO> getRecentOrders(int limit) {
+        try {
+            return orderDAO.getRecentOrders(limit);
+        } catch (Exception e) {
+            System.err.println("ERROR in getRecentOrders: " + e.getMessage());
+            e.printStackTrace();
+            return new java.util.ArrayList<>();
+        }
+    }
+    
+    /**
+     * Search orders by user ID or order ID
+     */
+    public List<OrderDTO> searchOrders(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return getAllOrders();
+        }
+        try {
+            List<OrderDTO> allOrders = getAllOrders();
+            String searchLower = searchTerm.toLowerCase().trim();
+            List<OrderDTO> filtered = new java.util.ArrayList<>();
+            for (OrderDTO order : allOrders) {
+                if (order.getUserId() != null && order.getUserId().toLowerCase().contains(searchLower)) {
+                    filtered.add(order);
+                } else if (String.valueOf(order.getOrderId()).contains(searchTerm)) {
+                    filtered.add(order);
+                }
+            }
+            return filtered;
+        } catch (Exception e) {
+            System.err.println("ERROR in searchOrders: " + e.getMessage());
+            e.printStackTrace();
+            return new java.util.ArrayList<>();
+        }
+    }
 
 }
 
