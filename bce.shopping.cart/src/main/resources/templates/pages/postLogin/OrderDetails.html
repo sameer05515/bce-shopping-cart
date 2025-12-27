@@ -94,7 +94,12 @@
                                         <tbody>
                                             <tr th:each="detail : ${order.orderDetails}">
                                                 <td>
-                                                    <strong th:text="${detail.bookTitle != null and !detail.bookTitle.isEmpty() ? detail.bookTitle : |Book ID: ${detail.bookId}|}">Book Title</strong><br>
+                                                    <strong>
+                                                        <span th:if="${detail.bookTitle != null and !detail.bookTitle.isEmpty()}" th:text="${detail.bookTitle}">Book Title</span>
+                                                        <span th:if="${detail.bookTitle == null or detail.bookTitle.isEmpty()}">
+                                                            Book ID: <span th:text="${detail.bookId}">0</span>
+                                                        </span>
+                                                    </strong><br>
                                                     <small class="text-muted" th:if="${detail.bookAuthor != null and !detail.bookAuthor.isEmpty()}">
                                                         by <span th:text="${detail.bookAuthor}">Author</span>
                                                     </small>
