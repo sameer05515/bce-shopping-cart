@@ -25,12 +25,16 @@
                 <label for="searchCategory"><b>Search By Category</b></label>
                 <select name="BookCategory" class="form-control" style="max-width: 300px; margin-left: 20px;">
                     <option value="Select" selected>Select Category</option>
-                    <option th:each="category : ${categories}" 
+                    <option th:if="${categories != null}" 
+                            th:each="category : ${categories}" 
                             th:value="${category.categoryName}" 
                             th:text="${category.categoryName}">
                         Category Name
                     </option>
                 </select>
+                <div th:if="${error != null}" class="error-message" style="color: red; margin-top: 10px;">
+                    <strong>Error:</strong> <span th:text="${error}"></span>
+                </div>
             </div>
 
             <div class="radio-group">

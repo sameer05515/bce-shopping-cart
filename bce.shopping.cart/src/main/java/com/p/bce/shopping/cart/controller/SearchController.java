@@ -1,5 +1,6 @@
 package com.p.bce.shopping.cart.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -23,18 +24,34 @@ public class SearchController {
 
 	@GetMapping({"/pages/html/postLogin/SearchCriteria.jsp", "/pages/html/postLogin/SearchCriteria"})
 	public String searchCriteria(HttpSession session, Model model) {
+		System.out.println("SearchController.searchCriteria() called");
 		String user = (String) session.getAttribute("user");
 		if (user == null) {
+			System.out.println("User not logged in, redirecting to Unauthorised");
 			return "redirect:/pages/html/preLogin/Unauthorised.html";
 		}
 		
+		System.out.println("User logged in: " + user);
 		try {
+			System.out.println("Calling categoryDetailsBC.getAllCategoryDetails()");
 			List<CategoryDetailsDTO> listCategDet = categoryDetailsBC.getAllCategoryDetails();
+			System.out.println("Categories loaded: " + (listCategDet != null ? listCategDet.size() : "null"));
+			
+			// Ensure categories list is never null
+			if (listCategDet == null) {
+				listCategDet = new ArrayList<>();
+			}
+			
 			model.addAttribute("categories", listCategDet);
+			System.out.println("Returning view: pages/postLogin/SearchCriteria");
 			return "pages/postLogin/SearchCriteria"; // Thymeleaf template
 		} catch (Exception e) {
+			System.err.println("ERROR in searchCriteria: " + e.getClass().getName() + ": " + e.getMessage());
 			e.printStackTrace();
+			// On error, still provide empty categories list so template can render
+			model.addAttribute("categories", new ArrayList<CategoryDetailsDTO>());
 			model.addAttribute("error", "Error loading categories: " + e.getMessage());
+			// Even on error, return the template so we can see the error message
 			return "pages/postLogin/SearchCriteria"; // Thymeleaf template
 		}
 	}
