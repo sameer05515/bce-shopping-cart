@@ -4,13 +4,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CServletCtxLisener implements ServletContextListener {
 
 	private static String confFolderPath = "D:\\Prem\\CUST-INST\\apache-tomcat-8.5.56-windows-x86\\webapps\\ShoppingCart\\WEB-INF\\conf";
 	private static String contextPath;
-	static Logger log = Logger.getLogger(CServletCtxLisener.class);
+	static Logger log = LoggerFactory.getLogger(CServletCtxLisener.class);
 
 	
 	public void contextDestroyed(ServletContextEvent arg0) {

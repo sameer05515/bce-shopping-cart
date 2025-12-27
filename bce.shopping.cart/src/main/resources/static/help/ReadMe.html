@@ -1,0 +1,139 @@
+<html>
+
+<head>
+    <style>
+        .bold-black-boder {
+            border-style: solid;
+            border-width: 3px;
+        }
+
+        .rounded-border-5px {
+            border-radius: 5px;
+        }
+
+        .margin-padding-5px {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="rounded-border-5px bold-black-boder margin-padding-5px">
+        <h2>Designing Online Database</h2>
+        The Shopping Cart Application uses 7 tables to store information about books and orders. The tables used in the
+        Shopping Cart Application are:
+        <ul>
+            <li><b>Book_Details</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`book_details` 
+                    ( 
+                       `bookid`      INT NOT NULL, 
+                       `categoryid`  INT NOT NULL, 
+                       `title`       VARCHAR(100) NOT NULL, 
+                       `author`      VARCHAR(200) NOT NULL, 
+                       `publisher`   VARCHAR(200) NOT NULL, 
+                       `edition`     VARCHAR(100) NOT NULL, 
+                       `price`       DECIMAL(7, 2) NOT NULL, 
+                       `quantity`    INT NOT NULL, 
+                       `description` TEXT NOT NULL, 
+                       PRIMARY KEY (`bookid`) 
+                    ) 
+                  engine = innodb;                     
+                </pre>
+            </li>
+
+            <li><b>Category_Details</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`category_details` 
+                    ( 
+                        `categoryid`   INT(10) NOT NULL, 
+                        `categoryname` VARCHAR(100) NOT NULL, 
+                        PRIMARY KEY (`categoryid`) 
+                    ) 
+                    engine = innodb; 
+                </pre>
+            </li>
+
+            <li><b>Order_Details</b>
+                <pre>
+                CREATE TABLE `bce-shopping-cart`.`order_details` 
+                ( 
+                   `orderid`  INT NOT NULL, 
+                   `bookid`   INT NOT NULL, 
+                   `quantity` INT NOT NULL 
+                ) 
+              engine = innodb;                 
+            </pre>
+            </li>
+
+            <li><b>Temp_Detail</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`temp_detail` 
+                    ( 
+                       `bookid`      INT NOT NULL, 
+                       `categoryid`  INT NOT NULL, 
+                       `title`       TEXT NOT NULL, 
+                       `author`      TEXT NOT NULL, 
+                       `publisher`   TEXT NOT NULL, 
+                       `edition`     TEXT NOT NULL, 
+                       `price`       DECIMAL(7, 2) NOT NULL, 
+                       `quantity`    INT NOT NULL, 
+                       `description` TEXT NOT NULL 
+                    ) 
+                  engine = innodb; 
+                </pre>
+            </li>
+
+            <li><b>User_Auth</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`user_auth` 
+                    ( 
+                       `username` VARCHAR(50) NOT NULL, 
+                       `password` VARCHAR(15) NOT NULL 
+                    ) 
+                  engine = innodb; 
+            </pre>
+            </li>
+
+            <li><b>User_Profile</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`user_profile` 
+                    ( 
+                       `username`   VARCHAR(50) NOT NULL, 
+                       `password`   VARCHAR(15) NOT NULL, 
+                       `firstname`  VARCHAR(25) NOT NULL, 
+                       `middlename` VARCHAR(25) NULL, 
+                       `lastname`   VARCHAR(25) NOT NULL, 
+                       `address1`   VARCHAR(40) NOT NULL, 
+                       `address2`   VARCHAR(40) NULL, 
+                       `city`       VARCHAR(20) NOT NULL, 
+                       `state`      VARCHAR(20) NOT NULL, 
+                       `pincode`    VARCHAR(10) NOT NULL, 
+                       `email`      VARCHAR(50) NOT NULL, 
+                       `phone`      VARCHAR(12) NOT NULL, 
+                       PRIMARY KEY (`username`) 
+                    ) 
+                  engine = innodb; 
+                </pre>
+            </li>
+
+            <li><b>Order_Table</b>
+                <pre>
+                    CREATE TABLE `bce-shopping-cart`.`order_table` 
+                    ( 
+                       `orderid`     INT NOT NULL, 
+                       `userid`      VARCHAR(50) NOT NULL, 
+                       `totalamount` DECIMAL(15, 2) NOT NULL, 
+                       `orderdate`   VARCHAR(8) NOT NULL, 
+                       PRIMARY KEY (`orderid`) 
+                    ) 
+                  engine = innodb; 
+                </pre>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>

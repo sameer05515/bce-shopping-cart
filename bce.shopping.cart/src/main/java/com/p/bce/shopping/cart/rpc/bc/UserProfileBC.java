@@ -1,15 +1,17 @@
 package com.p.bce.shopping.cart.rpc.bc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.p.bce.shopping.cart.rpc.dao.UserProfileDAO;
 import com.p.bce.shopping.cart.rpc.pojo.UserAuthDTO;
 import com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO;
 
+@Service
 public class UserProfileBC {
-	private UserProfileDAO objUserProfileDAO;
 	
-	public UserProfileBC() {
-		objUserProfileDAO=new UserProfileDAO();
-	}
+	@Autowired
+	private UserProfileDAO objUserProfileDAO;
 	
 	public boolean keyExists(UserProfileDTO objUserProfileDTO){
 		try {
