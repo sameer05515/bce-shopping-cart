@@ -42,6 +42,7 @@
                                     <th>Quantity Available</th>
                                     <th>Description</th>
                                     <th>Category</th>
+                                    <th th:if="${userName != null}">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +60,14 @@
                                     <td th:text="${book.quantity}">0</td>
                                     <td th:text="${book.description}">Description</td>
                                     <td th:text="${book.categoryName}">Category</td>
+                                    <td th:if="${userName != null}">
+                                        <form th:action="@{/pages/html/postLogin/Wishlist/add}" method="POST" style="display: inline;">
+                                            <input type="hidden" name="bookId" th:value="${book.bookId}">
+                                            <button type="submit" class="btn btn-secondary btn-sm" title="Add to Wishlist">
+                                                ❤️ Wishlist
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

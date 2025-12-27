@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>❤️ My Wishlist</h1>
+        </div>
+
+        <div th:if="${message != null}" class="alert alert-success">
+            <strong>Success:</strong> <span th:text="${message}">Message</span>
+        </div>
+
+        <div th:if="${error != null}" class="alert alert-error">
+            <strong>Error:</strong> <span th:text="${error}">Error</span>
+        </div>
+
+        <div th:if="${wishlistItems == null or wishlistItems.isEmpty()}">
+            <div class="alert alert-info">
+                <strong>Your wishlist is empty!</strong> Start adding books to your wishlist to save them for later.
+            </div>
+            <div class="btn-group">
+                <a th:href="@{/pages/html/postLogin/SearchCriteria}" class="btn btn-primary">🔍 Browse Books</a>
+            </div>
+        </div>
+
+        <div th:if="${wishlistItems != null and !wishlistItems.isEmpty()}">
+            <div class="card">
+                <div class="card-header">
+                    <span th:text="${#lists.size(wishlistItems)}">0</span> Item(s) in Wishlist
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Publisher</th>
+                                <th>Price (₹)</th>
+                                <th>Stock</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item, itemStat : ${wishlistItems}">
+                                <td th:text="${itemStat.count}">1</td>
+                                <td><strong th:text="${item.bookTitle}">Book Title</strong></td>
+                                <td th:text="${item.bookAuthor}">Author</td>
+                                <td th:text="${item.bookPublisher}">Publisher</td>
+                                <td>₹<span th:text="${#numbers.formatDecimal(item.bookPrice, 0, 2)}">0.00</span></td>
+                                <td>
+                                    <span th:if="${item.availableQuantity > 0}" style="color: #28a745;">
+                                        <span th:text="${item.availableQuantity}">0</span> available
+                                    </span>
+                                    <span th:if="${item.availableQuantity == 0}" style="color: #f44336;">
+                                        Out of Stock
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:text="${item.addedDate != null ? #dates.format(item.addedDate, 'MMM dd, yyyy') : 'N/A'}">Date</span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 5px;">
+                                        <form th:action="@{/pages/html/postLogin/Wishlist/moveToCart}" method="POST" style="display: inline;">
+                                            <input type="hidden" name="bookId" th:value="${item.bookId}">
+                                            <button type="submit" class="btn btn-primary btn-sm" 
+                                                    th:disabled="${item.availableQuantity == 0}">
+                                                🛒 Add to Cart
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/pages/html/postLogin/Wishlist/removeById}" method="POST" style="display: inline;">
+                                            <input type="hidden" name="wishlistId" th:value="${item.wishlistId}">
+                                            <button type="submit" class="btn btn-danger btn-sm" 
+                                                    onclick="return confirm('Remove from wishlist?');">
+                                                ❌ Remove
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

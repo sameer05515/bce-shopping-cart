@@ -51,7 +51,7 @@
                                 <td th:text="${iterStat.count}">1</td>
                                 <td><strong th:text="${item.title}">Book Title</strong></td>
                                 <td th:text="${item.author}">Author</td>
-                                <td>₹<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0</span></td>
+                                <td>₹<span th:text="${#numbers.formatDecimal(item.price, 0, 2)}">0.00</span></td>
                                 <td>
                                     <input type="number" 
                                            th:name="'quantity_' + ${item.bookId}"
@@ -68,7 +68,7 @@
                                         ❌ Out of stock
                                     </div>
                                 </td>
-                                <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)}">0</span></strong></td>
+                                <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)}">0.00</span></strong></td>
                                 <td>
                                     <a th:href="@{/pages/html/postLogin/Cart/remove(bookId=${item.bookId})}" 
                                        class="btn btn-danger btn-sm">Remove</a>
@@ -90,14 +90,14 @@
                     </div>
                     <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; color: #666;">
                         <span>Estimated Shipping:</span>
-                        <span th:if="${estimatedShipping != null and estimatedShipping.compareTo(java.math.BigDecimal.ZERO) == 0}" style="color: #28a745;">Free</span>
-                        <span th:if="${estimatedShipping == null or estimatedShipping.compareTo(java.math.BigDecimal.ZERO) > 0}">
+                        <span th:if="${isFreeShipping != null and isFreeShipping}" style="color: #28a745;">Free</span>
+                        <span th:if="${isFreeShipping == null or !isFreeShipping}">
                             ₹<span th:text="${estimatedShipping != null ? #numbers.formatDecimal(estimatedShipping, 0, 2) : '0.00'}">0.00</span>
                         </span>
                     </div>
-                    <div th:if="${subtotal != null and subtotal.compareTo(new java.math.BigDecimal('500')) < 0}" 
+                    <div th:if="${needsMoreForFreeShipping != null and needsMoreForFreeShipping}" 
                          style="font-size: 0.85em; color: #667eea; margin-bottom: 10px; padding: 8px; background: #e8f0fe; border-radius: 5px;">
-                        💡 Add ₹<span th:text="${#numbers.formatDecimal(new java.math.BigDecimal('500').subtract(subtotal), 0, 2)}">0.00</span> more for free shipping!
+                        💡 Add ₹<span th:text="${remainingForFreeShipping != null ? #numbers.formatDecimal(remainingForFreeShipping, 0, 2) : '0.00'}">0.00</span> more for free shipping!
                     </div>
                     <hr style="margin: 15px 0;">
                     <div class="summary-row" style="display: flex; justify-content: space-between; margin-bottom: 0;">

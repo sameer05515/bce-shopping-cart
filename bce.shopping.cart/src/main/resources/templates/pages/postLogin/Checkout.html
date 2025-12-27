@@ -27,10 +27,16 @@
                         <div class="card-header">📦 Shipping Address</div>
                         <div style="padding: 20px;">
                             <div th:if="${userProfile != null}">
-                                <p><strong th:text="${userProfile.firstName + ' ' + (userProfile.middleName != null ? userProfile.middleName + ' ' : '') + userProfile.lastName}">Full Name</strong></p>
+                                <p><strong>
+                                    <span th:text="${userProfile.firstName}">First</span><span th:if="${userProfile.middleName != null and !userProfile.middleName.isEmpty()}" th:text="' ' + ${userProfile.middleName} + ' '"> Middle</span><span th:text="' ' + ${userProfile.lastName}">Last</span>
+                                </strong></p>
                                 <p th:text="${userProfile.address1}">Address Line 1</p>
                                 <p th:if="${userProfile.address2 != null and !userProfile.address2.isEmpty()}" th:text="${userProfile.address2}">Address Line 2</p>
-                                <p th:text="${userProfile.city + ', ' + userProfile.state + ' - ' + userProfile.pinCode}">City, State - Pincode</p>
+                                <p>
+                                    <span th:text="${userProfile.city}">City</span>, 
+                                    <span th:text="${userProfile.state}">State</span> - 
+                                    <span th:text="${userProfile.pinCode}">Pincode</span>
+                                </p>
                                 <p>📞 <span th:text="${userProfile.phone}">Phone</span></p>
                                 <p>📧 <span th:text="${userProfile.email}">Email</span></p>
                                 <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
@@ -100,14 +106,14 @@
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                             <span>Shipping:</span>
-                            <span th:if="${shipping != null and shipping.compareTo(java.math.BigDecimal.ZERO) == 0}" style="color: #28a745;">Free</span>
-                            <span th:if="${shipping == null or shipping.compareTo(java.math.BigDecimal.ZERO) > 0}">
+                            <span th:if="${isFreeShipping != null and isFreeShipping}" style="color: #28a745;">Free</span>
+                            <span th:if="${isFreeShipping == null or !isFreeShipping}">
                                 ₹<span th:text="${shipping != null ? #numbers.formatDecimal(shipping, 0, 2) : '0.00'}">0.00</span>
                             </span>
                         </div>
-                        <div th:if="${subtotal != null and subtotal.compareTo(new java.math.BigDecimal('500')) < 0}" 
+                        <div th:if="${subtotal != null and subtotal < 500}" 
                              style="font-size: 0.85em; color: #666; margin-bottom: 15px;">
-                            💡 Add ₹<span th:text="${#numbers.formatDecimal(new java.math.BigDecimal('500').subtract(subtotal), 0, 2)}">0.00</span> more for free shipping!
+                            💡 Add ₹<span th:text="${#numbers.formatDecimal(500 - subtotal, 0, 2)}">0.00</span> more for free shipping!
                         </div>
                         <hr style="margin: 20px 0;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">

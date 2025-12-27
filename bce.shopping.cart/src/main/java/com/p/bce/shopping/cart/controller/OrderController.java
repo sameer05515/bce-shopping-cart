@@ -48,41 +48,56 @@ public class OrderController {
 
         System.out.println("Cart has " + cart.size() + " items");
         
-        // Load user profile for shipping address
         try {
-            com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO userProfile = userProfileBC.getUserProfile(userName);
-            model.addAttribute("userProfile", userProfile);
+            // Load user profile for shipping address
+            com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO userProfile = null;
+            try {
+                userProfile = userProfileBC.getUserProfile(userName);
+                model.addAttribute("userProfile", userProfile);
+                System.out.println("User profile loaded: " + (userProfile != null ? "Yes" : "No"));
+            } catch (Exception e) {
+                System.err.println("Error loading user profile: " + e.getMessage());
+                e.printStackTrace();
+                model.addAttribute("userProfile", null);
+            }
+            
+            // Calculate totals
+            BigDecimal subtotal = BigDecimal.ZERO;
+            for (CartItemDTO item : cart) {
+                subtotal = subtotal.add(item.getSubtotal());
+            }
+            
+            // Calculate tax (18% GST)
+            BigDecimal taxRate = new BigDecimal("0.18");
+            BigDecimal tax = subtotal.multiply(taxRate);
+            
+            // Calculate shipping (Free for orders above ₹500, otherwise ₹50)
+            BigDecimal shipping = BigDecimal.ZERO;
+            if (subtotal.compareTo(new BigDecimal("500")) < 0) {
+                shipping = new BigDecimal("50");
+            }
+            
+            // Calculate total
+            BigDecimal total = subtotal.add(tax).add(shipping);
+
+            model.addAttribute("cartItems", cart);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("tax", tax);
+            model.addAttribute("shipping", shipping);
+            model.addAttribute("total", total);
+            
+            // Helper attributes for template
+            model.addAttribute("isFreeShipping", shipping.compareTo(BigDecimal.ZERO) == 0);
+
+            System.out.println("Subtotal: " + subtotal + ", Tax: " + tax + ", Shipping: " + shipping + ", Total: " + total);
+            System.out.println("Returning view: pages/postLogin/Checkout");
+            return "pages/postLogin/Checkout";
         } catch (Exception e) {
-            System.err.println("Error loading user profile: " + e.getMessage());
+            System.err.println("ERROR in checkout: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            // On error, redirect to cart
+            return "redirect:/pages/html/postLogin/Cart?error=Error loading checkout page";
         }
-        
-        // Calculate totals
-        BigDecimal subtotal = BigDecimal.ZERO;
-        for (CartItemDTO item : cart) {
-            subtotal = subtotal.add(item.getSubtotal());
-        }
-        
-        // Calculate tax (18% GST)
-        BigDecimal taxRate = new BigDecimal("0.18");
-        BigDecimal tax = subtotal.multiply(taxRate);
-        
-        // Calculate shipping (Free for orders above ₹500, otherwise ₹50)
-        BigDecimal shipping = BigDecimal.ZERO;
-        if (subtotal.compareTo(new BigDecimal("500")) < 0) {
-            shipping = new BigDecimal("50");
-        }
-        
-        // Calculate total
-        BigDecimal total = subtotal.add(tax).add(shipping);
-
-        model.addAttribute("cartItems", cart);
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("tax", tax);
-        model.addAttribute("shipping", shipping);
-        model.addAttribute("total", total);
-
-        System.out.println("Returning view: pages/postLogin/Checkout");
-        return "pages/postLogin/Checkout";
     }
 
     @GetMapping({"/pages/html/postLogin/PlaceOrder.jsp", "/pages/html/postLogin/PlaceOrder"})
@@ -210,24 +225,38 @@ public class OrderController {
             @RequestParam("id") int orderId,
             HttpSession session,
             Model model) {
-        
+        System.out.println("OrderController.orderDetails() called for orderId: " + orderId);
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
+        System.out.println("User logged in: " + userName);
 
-        OrderDTO order = orderBC.getOrderById(orderId);
-        if (order == null) {
-            return "redirect:/pages/html/postLogin/OrderHistory?error=Order not found";
+        try {
+            OrderDTO order = orderBC.getOrderById(orderId);
+            if (order == null) {
+                System.err.println("ERROR: Order not found for ID: " + orderId);
+                return "redirect:/pages/html/postLogin/OrderHistory?error=Order not found";
+            }
+
+            System.out.println("Order found: " + order.getOrderId() + " for user: " + order.getUserId());
+            System.out.println("Order details count: " + (order.getOrderDetails() != null ? order.getOrderDetails().size() : "null"));
+
+            // Verify user owns the order
+            if (!order.getUserId().equals(userName)) {
+                System.err.println("ERROR: User " + userName + " attempted to access order " + orderId + " not belonging to them.");
+                return "redirect:/pages/html/preLogin/Unauthorised.html";
+            }
+
+            model.addAttribute("order", order);
+            System.out.println("Returning view: pages/postLogin/OrderDetails");
+            return "pages/postLogin/OrderDetails";
+        } catch (Exception e) {
+            System.err.println("ERROR in orderDetails: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return "redirect:/pages/html/postLogin/OrderHistory?error=Error loading order details";
         }
-
-        // Verify user owns the order
-        if (!order.getUserId().equals(userName)) {
-            return "redirect:/pages/html/preLogin/Unauthorised.html";
-        }
-
-        model.addAttribute("order", order);
-        return "pages/postLogin/OrderDetails";
     }
 
     @PostMapping("/pages/html/postLogin/Order/Cancel")

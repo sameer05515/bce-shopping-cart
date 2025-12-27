@@ -14,6 +14,10 @@
             <h1>📄 Order Details</h1>
         </div>
 
+        <div th:if="${error != null}" class="alert alert-error">
+            <strong>Error:</strong> <span th:text="${error}">Error message</span>
+        </div>
+
         <div th:if="${order != null}">
             <div class="card">
                 <div class="card-header">Order Information</div>
@@ -24,7 +28,7 @@
                 <div class="profile-info">
                     <div class="profile-label">Order Date:</div>
                     <div class="profile-value">
-                        <span th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
+                        <span th:text="${order.orderDate != null ? #dates.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
                     </div>
                 </div>
                 <div class="profile-info">
@@ -56,14 +60,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:if="${order.orderDetails != null}" th:each="detail : ${order.orderDetails}">
+                            <tr th:if="${order.orderDetails == null or order.orderDetails.isEmpty()}">
+                                <td colspan="4" style="text-align: center; padding: 20px;">
+                                    <em>No order details found.</em>
+                                </td>
+                            </tr>
+                            <tr th:if="${order.orderDetails != null and !order.orderDetails.isEmpty()}" th:each="detail : ${order.orderDetails}">
                                 <td>
-                                    <strong th:text="${detail.bookTitle != null ? detail.bookTitle : 'Book ID: ' + detail.bookId}">Book Title</strong><br>
-                                    <small th:if="${detail.bookAuthor != null}">by <span th:text="${detail.bookAuthor}">Author</span></small>
+                                    <strong th:text="${detail.bookTitle != null and !detail.bookTitle.isEmpty() ? detail.bookTitle : 'Book ID: ' + detail.bookId}">Book Title</strong><br>
+                                    <small th:if="${detail.bookAuthor != null and !detail.bookAuthor.isEmpty()}">by <span th:text="${detail.bookAuthor}">Author</span></small>
                                 </td>
                                 <td th:text="${detail.quantity}">1</td>
-                                <td>₹<span th:text="${#numbers.formatDecimal(detail.price, 0, 2)}">0.00</span></td>
-                                <td><strong>₹<span th:text="${#numbers.formatDecimal(detail.subtotal, 0, 2)}">0.00</span></strong></td>
+                                <td>₹<span th:text="${detail.price != null ? #numbers.formatDecimal(detail.price, 0, 2) : '0.00'}">0.00</span></td>
+                                <td><strong>₹<span th:text="${detail.subtotal != null ? #numbers.formatDecimal(detail.subtotal, 0, 2) : '0.00'}">0.00</span></strong></td>
                             </tr>
                         </tbody>
                     </table>

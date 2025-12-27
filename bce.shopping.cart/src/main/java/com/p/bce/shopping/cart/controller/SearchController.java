@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.p.bce.shopping.cart.rpc.bc.CategoryDetailsBC;
+import com.p.bce.shopping.cart.rpc.bc.WishlistBC;
 import com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO;
 import com.p.bce.shopping.cart.rpc.pojo.SearchedBookCategories;
 
@@ -21,6 +22,9 @@ public class SearchController {
 
 	@Autowired
 	private CategoryDetailsBC categoryDetailsBC;
+	
+	@Autowired
+	private WishlistBC wishlistBC;
 
 	@GetMapping({"/pages/html/postLogin/SearchCriteria.jsp", "/pages/html/postLogin/SearchCriteria"})
 	public String searchCriteria(HttpSession session, Model model) {
@@ -139,6 +143,7 @@ public class SearchController {
 		model.addAttribute("searchResults", listSearchedBookCategories);
 		model.addAttribute("categories", listCategDet);
 		model.addAttribute("counter", counter);
+		model.addAttribute("userName", user); // Pass userName for wishlist checks
 		
 		return "pages/postLogin/Search"; // Thymeleaf template
 	}

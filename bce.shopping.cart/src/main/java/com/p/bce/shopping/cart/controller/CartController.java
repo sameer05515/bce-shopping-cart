@@ -61,15 +61,45 @@ public class CartController {
         // Calculate estimated total
         BigDecimal estimatedTotal = subtotal.add(estimatedTax).add(estimatedShipping);
 
-        model.addAttribute("cartItems", cart);
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("estimatedTax", estimatedTax);
-        model.addAttribute("estimatedShipping", estimatedShipping);
-        model.addAttribute("estimatedTotal", estimatedTotal);
-        model.addAttribute("total", subtotal); // Keep for backward compatibility
+        try {
+            model.addAttribute("cartItems", cart);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("estimatedTax", estimatedTax);
+            model.addAttribute("estimatedShipping", estimatedShipping);
+            model.addAttribute("estimatedTotal", estimatedTotal);
+            model.addAttribute("total", subtotal); // Keep for backward compatibility
+            
+            // Add helper attributes for template comparisons
+            model.addAttribute("subtotalValue", subtotal.doubleValue());
+            model.addAttribute("estimatedShippingValue", estimatedShipping.doubleValue());
+            model.addAttribute("isFreeShipping", estimatedShipping.compareTo(BigDecimal.ZERO) == 0);
+            model.addAttribute("needsMoreForFreeShipping", subtotal.compareTo(new BigDecimal("500")) < 0);
+            if (subtotal.compareTo(new BigDecimal("500")) < 0) {
+                BigDecimal remaining = new BigDecimal("500").subtract(subtotal);
+                model.addAttribute("remainingForFreeShipping", remaining);
+            }
 
-        System.out.println("Returning view: pages/postLogin/Cart");
-        return "pages/postLogin/Cart";
+            System.out.println("Cart subtotal: " + subtotal);
+            System.out.println("Estimated tax: " + estimatedTax);
+            System.out.println("Estimated shipping: " + estimatedShipping);
+            System.out.println("Estimated total: " + estimatedTotal);
+            System.out.println("Returning view: pages/postLogin/Cart");
+            return "pages/postLogin/Cart";
+        } catch (Exception e) {
+            System.err.println("ERROR in viewCart: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            // On error, still return the template with basic data
+            model.addAttribute("cartItems", cart);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("estimatedTax", BigDecimal.ZERO);
+            model.addAttribute("estimatedShipping", BigDecimal.ZERO);
+            model.addAttribute("estimatedTotal", subtotal);
+            model.addAttribute("total", subtotal);
+            model.addAttribute("isFreeShipping", true);
+            model.addAttribute("needsMoreForFreeShipping", false);
+            model.addAttribute("error", "Error calculating cart totals: " + e.getMessage());
+            return "pages/postLogin/Cart";
+        }
     }
 
     @PostMapping({"/pages/html/postLogin/Inter_Cart.jsp", "/cart/add"})
