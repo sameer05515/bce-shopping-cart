@@ -64,9 +64,6 @@
                                     <strong class="text-success fs-5">₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong>
                                 </dd>
                                 
-                                <dt class="col-sm-4" th:if="${order.orderNotes != null and !order.orderNotes.isEmpty()}">Order Notes:</dt>
-                                <dd class="col-sm-8" th:if="${order.orderNotes != null and !order.orderNotes.isEmpty()}" 
-                                    th:text="${order.orderNotes}">Notes</dd>
                             </dl>
                         </div>
                     </div>
