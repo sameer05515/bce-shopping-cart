@@ -23,7 +23,7 @@ public class ProfileController {
 	/**
 	 * Display user profile page
 	 */
-	@GetMapping("/pages/html/postLogin/Profile.jsp")
+	@GetMapping({"/pages/html/postLogin/Profile.jsp", "/pages/html/postLogin/Profile"})
 	public String viewProfile(HttpSession session, Model model) {
 		String userName = (String) session.getAttribute("user");
 		if (userName == null) {
@@ -43,7 +43,7 @@ public class ProfileController {
 	/**
 	 * Display profile edit page
 	 */
-	@GetMapping("/pages/html/postLogin/EditProfile.jsp")
+	@GetMapping({"/pages/html/postLogin/EditProfile.jsp", "/pages/html/postLogin/EditProfile"})
 	public String editProfilePage(HttpSession session, Model model) {
 		String userName = (String) session.getAttribute("user");
 		if (userName == null) {
@@ -111,7 +111,7 @@ public class ProfileController {
 	/**
 	 * Display change password page
 	 */
-	@GetMapping("/pages/html/postLogin/ChangePassword.jsp")
+	@GetMapping({"/pages/html/postLogin/ChangePassword.jsp", "/pages/html/postLogin/ChangePassword"})
 	public String changePasswordPage(HttpSession session) {
 		String userName = (String) session.getAttribute("user");
 		if (userName == null) {

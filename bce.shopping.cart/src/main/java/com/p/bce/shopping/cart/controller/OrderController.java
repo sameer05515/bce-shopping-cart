@@ -25,7 +25,7 @@ public class OrderController {
     @Autowired
     private OrderBC orderBC;
 
-    @GetMapping("/pages/html/postLogin/Checkout.jsp")
+    @GetMapping({"/pages/html/postLogin/Checkout.jsp", "/pages/html/postLogin/Checkout"})
     public String checkout(HttpSession session, Model model) {
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
@@ -101,7 +101,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/pages/html/postLogin/OrderHistory.jsp")
+    @GetMapping({"/pages/html/postLogin/OrderHistory.jsp", "/pages/html/postLogin/OrderHistory"})
     public String orderHistory(HttpSession session, Model model) {
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
@@ -114,7 +114,7 @@ public class OrderController {
         return "pages/postLogin/OrderHistory";
     }
 
-    @GetMapping("/pages/html/postLogin/OrderDetails.jsp")
+    @GetMapping({"/pages/html/postLogin/OrderDetails.jsp", "/pages/html/postLogin/OrderDetails"})
     public String orderDetails(
             @RequestParam("id") int orderId,
             HttpSession session,
@@ -157,7 +157,7 @@ public class OrderController {
             redirectAttributes.addFlashAttribute("error", "Failed to cancel order.");
         }
 
-        return "redirect:/pages/html/postLogin/OrderHistory.jsp";
+            return "redirect:/pages/html/postLogin/OrderHistory";
     }
 
     // Admin endpoints

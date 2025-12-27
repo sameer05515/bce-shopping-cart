@@ -21,7 +21,7 @@ public class SearchController {
 	@Autowired
 	private CategoryDetailsBC categoryDetailsBC;
 
-	@GetMapping("/pages/html/postLogin/SearchCriteria.jsp")
+	@GetMapping({"/pages/html/postLogin/SearchCriteria.jsp", "/pages/html/postLogin/SearchCriteria"})
 	public String searchCriteria(HttpSession session, Model model) {
 		String user = (String) session.getAttribute("user");
 		if (user == null) {
@@ -35,7 +35,7 @@ public class SearchController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("error", "Error loading categories: " + e.getMessage());
-			return "pages/html/postLogin/SearchCriteria";
+			return "pages/postLogin/SearchCriteria"; // Thymeleaf template
 		}
 	}
 

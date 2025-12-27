@@ -24,7 +24,7 @@ public class CartController {
     @Autowired
     private BookDetailsBC bookDetailsBC;
 
-    @GetMapping("/pages/html/postLogin/Cart.jsp")
+    @GetMapping({"/pages/html/postLogin/Cart.jsp", "/pages/html/postLogin/Cart"})
     public String viewCart(HttpSession session, Model model) {
         String userName = (String) session.getAttribute("user");
         if (userName == null) {

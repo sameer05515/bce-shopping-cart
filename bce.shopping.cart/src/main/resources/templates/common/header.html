@@ -8,7 +8,7 @@
     <header class="site-header" th:fragment="header">
         <div class="header-container">
             <div class="header-logo">
-                <a th:href="${session.user != null and !session.user.isEmpty()} ? '/pages/html/postLogin/SearchCriteria' : '/'">
+                <a th:href="${session.user != null and !session.user.isEmpty()} ? '/pages/html/postLogin/SearchCriteria.jsp' : '/'">
                     <h1>📚 BCE Shopping Cart</h1>
                 </a>
             </div>
