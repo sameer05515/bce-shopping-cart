@@ -65,7 +65,7 @@
                                     <td><strong th:text="${book.title}">Title</strong></td>
                                     <td th:text="${book.author}">Author</td>
                                     <td th:text="${book.publisher}">Publisher</td>
-                                    <td><span class="badge bg-secondary" th:text="${book.categoryName}">Category</span></td>
+                                    <td><span class="badge bg-secondary" th:text="${book.categoryName != null ? book.categoryName : 'N/A'}">Category</span></td>
                                     <td><strong class="text-success">₹<span th:text="${#numbers.formatDecimal(book.price, 0, 2)}">0.00</span></strong></td>
                                     <td>
                                         <span th:if="${book.quantity > 0}" class="badge bg-success" th:text="${book.quantity}">0</span>

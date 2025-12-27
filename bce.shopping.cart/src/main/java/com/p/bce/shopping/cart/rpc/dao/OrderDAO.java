@@ -63,7 +63,7 @@ public class OrderDAO extends AbstractDAO {
 
     public List<OrderDTO> getOrdersByUser(String userId) {
         try {
-            return jdbcTemplate.query(
+            List<OrderDTO> orders = jdbcTemplate.query(
                     "SELECT orderid, userid, totalamount, orderdate FROM order_table WHERE userid = ? ORDER BY orderid DESC",
                     new RowMapper<OrderDTO>() {
                         @Override
@@ -71,13 +71,23 @@ public class OrderDAO extends AbstractDAO {
                             OrderDTO order = new OrderDTO();
                             order.setOrderId(rs.getInt("orderid"));
                             order.setUserId(rs.getString("userid"));
-                            order.setTotalAmount(rs.getBigDecimal("totalamount"));
+                            
+                            // Handle null total amount
+                            BigDecimal totalAmount = rs.getBigDecimal("totalamount");
+                            if (totalAmount == null) {
+                                totalAmount = BigDecimal.ZERO;
+                            }
+                            order.setTotalAmount(totalAmount);
                             
                             // Parse date from YYYYMMDD format
                             try {
                                 String dateStr = rs.getString("orderdate");
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                                order.setOrderDate(dateFormat.parse(dateStr));
+                                if (dateStr != null && !dateStr.trim().isEmpty()) {
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                                    order.setOrderDate(dateFormat.parse(dateStr));
+                                } else {
+                                    order.setOrderDate(new Date());
+                                }
                             } catch (Exception e) {
                                 order.setOrderDate(new Date());
                             }
@@ -87,6 +97,8 @@ public class OrderDAO extends AbstractDAO {
                         }
                     },
                     userId);
+            // Ensure we never return null
+            return orders != null ? orders : new ArrayList<OrderDTO>();
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<OrderDTO>();
@@ -103,13 +115,23 @@ public class OrderDAO extends AbstractDAO {
                             OrderDTO order = new OrderDTO();
                             order.setOrderId(rs.getInt("orderid"));
                             order.setUserId(rs.getString("userid"));
-                            order.setTotalAmount(rs.getBigDecimal("totalamount"));
+                            
+                            // Handle null total amount
+                            BigDecimal totalAmount = rs.getBigDecimal("totalamount");
+                            if (totalAmount == null) {
+                                totalAmount = BigDecimal.ZERO;
+                            }
+                            order.setTotalAmount(totalAmount);
                             
                             // Parse date from YYYYMMDD format
                             try {
                                 String dateStr = rs.getString("orderdate");
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                                order.setOrderDate(dateFormat.parse(dateStr));
+                                if (dateStr != null && !dateStr.trim().isEmpty()) {
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                                    order.setOrderDate(dateFormat.parse(dateStr));
+                                } else {
+                                    order.setOrderDate(new Date());
+                                }
                             } catch (Exception e) {
                                 order.setOrderDate(new Date());
                             }
@@ -141,9 +163,17 @@ public class OrderDAO extends AbstractDAO {
                             detail.setOrderId(rs.getInt("orderid"));
                             detail.setBookId(rs.getInt("bookid"));
                             detail.setQuantity(rs.getInt("quantity"));
-                            detail.setPrice(rs.getBigDecimal("price"));
-                            detail.setBookTitle(rs.getString("title"));
-                            detail.setBookAuthor(rs.getString("author"));
+                            
+                            // Handle null price
+                            BigDecimal price = rs.getBigDecimal("price");
+                            if (price == null) {
+                                price = BigDecimal.ZERO;
+                            }
+                            detail.setPrice(price);
+                            
+                            // Handle null title and author
+                            detail.setBookTitle(rs.getString("title") != null ? rs.getString("title") : "Unknown Book");
+                            detail.setBookAuthor(rs.getString("author") != null ? rs.getString("author") : "Unknown Author");
                             return detail;
                         }
                     },
@@ -156,7 +186,7 @@ public class OrderDAO extends AbstractDAO {
 
     public List<OrderDTO> getAllOrders() {
         try {
-            return jdbcTemplate.query(
+            List<OrderDTO> orders = jdbcTemplate.query(
                     "SELECT orderid, userid, totalamount, orderdate FROM order_table ORDER BY orderid DESC",
                     new RowMapper<OrderDTO>() {
                         @Override
@@ -164,13 +194,23 @@ public class OrderDAO extends AbstractDAO {
                             OrderDTO order = new OrderDTO();
                             order.setOrderId(rs.getInt("orderid"));
                             order.setUserId(rs.getString("userid"));
-                            order.setTotalAmount(rs.getBigDecimal("totalamount"));
+                            
+                            // Handle null total amount
+                            BigDecimal totalAmount = rs.getBigDecimal("totalamount");
+                            if (totalAmount == null) {
+                                totalAmount = BigDecimal.ZERO;
+                            }
+                            order.setTotalAmount(totalAmount);
                             
                             // Parse date from YYYYMMDD format
                             try {
                                 String dateStr = rs.getString("orderdate");
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                                order.setOrderDate(dateFormat.parse(dateStr));
+                                if (dateStr != null && !dateStr.trim().isEmpty()) {
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                                    order.setOrderDate(dateFormat.parse(dateStr));
+                                } else {
+                                    order.setOrderDate(new Date());
+                                }
                             } catch (Exception e) {
                                 order.setOrderDate(new Date());
                             }
@@ -179,6 +219,8 @@ public class OrderDAO extends AbstractDAO {
                             return order;
                         }
                     });
+            // Ensure we never return null
+            return orders != null ? orders : new ArrayList<OrderDTO>();
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<OrderDTO>();

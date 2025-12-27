@@ -45,11 +45,12 @@ public class BookDetailsDAO extends AbstractDAO {
 	public List<BookDetailDTO> getAllBooks() {
 		try {
 			return jdbcTemplate.query(
-					"SELECT BookId, CategoryId, Title, author, publisher, edition, price, quantity, description FROM book_details ORDER BY BookId DESC",
+					"SELECT b.BookId, b.CategoryId, b.Title, b.author, b.publisher, b.edition, b.price, b.quantity, b.description, " +
+					"c.CategoryName FROM book_details b LEFT JOIN category_details c ON b.CategoryId = c.CategoryId ORDER BY b.BookId DESC",
 					new RowMapper<BookDetailDTO>() {
 						@Override
 						public BookDetailDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new BookDetailDTO(
+							BookDetailDTO book = new BookDetailDTO(
 									rs.getInt("BookId"),
 									rs.getInt("CategoryId"),
 									rs.getString("Title"),
@@ -59,6 +60,8 @@ public class BookDetailsDAO extends AbstractDAO {
 									rs.getDouble("price"),
 									rs.getInt("quantity"),
 									rs.getString("description"));
+							book.setCategoryName(rs.getString("CategoryName"));
+							return book;
 						}
 					});
 		} catch (Exception ex) {

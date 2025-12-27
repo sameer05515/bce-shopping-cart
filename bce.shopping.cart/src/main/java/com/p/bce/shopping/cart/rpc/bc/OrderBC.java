@@ -83,32 +83,79 @@ public class OrderBC {
         if (userId == null || userId.trim().isEmpty()) {
             return new java.util.ArrayList<>();
         }
-        List<OrderDTO> orders = orderDAO.getOrdersByUser(userId);
-        // Load order details for each order
-        for (OrderDTO order : orders) {
-            order.setOrderDetails(orderDAO.getOrderDetails(order.getOrderId()));
+        try {
+            List<OrderDTO> orders = orderDAO.getOrdersByUser(userId);
+            if (orders == null) {
+                return new java.util.ArrayList<>();
+            }
+            // Load order details for each order
+            for (OrderDTO order : orders) {
+                if (order != null) {
+                    try {
+                        order.setOrderDetails(orderDAO.getOrderDetails(order.getOrderId()));
+                        if (order.getOrderDetails() == null) {
+                            order.setOrderDetails(new java.util.ArrayList<>());
+                        }
+                    } catch (Exception e) {
+                        System.err.println("ERROR loading order details for order " + order.getOrderId() + ": " + e.getMessage());
+                        order.setOrderDetails(new java.util.ArrayList<>());
+                    }
+                }
+            }
+            return orders;
+        } catch (Exception e) {
+            System.err.println("ERROR in getOrdersByUser: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return new java.util.ArrayList<>();
         }
-        return orders;
     }
 
     public OrderDTO getOrderById(int orderId) {
         if (orderId <= 0) {
             return null;
         }
-        OrderDTO order = orderDAO.getOrderById(orderId);
-        if (order != null) {
-            order.setOrderDetails(orderDAO.getOrderDetails(orderId));
+        try {
+            OrderDTO order = orderDAO.getOrderById(orderId);
+            if (order != null) {
+                try {
+                    order.setOrderDetails(orderDAO.getOrderDetails(orderId));
+                    if (order.getOrderDetails() == null) {
+                        order.setOrderDetails(new java.util.ArrayList<>());
+                    }
+                } catch (Exception e) {
+                    System.err.println("ERROR loading order details for order " + orderId + ": " + e.getMessage());
+                    order.setOrderDetails(new java.util.ArrayList<>());
+                }
+            }
+            return order;
+        } catch (Exception e) {
+            System.err.println("ERROR in getOrderById: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return order;
     }
 
     public List<OrderDTO> getAllOrders() {
-        List<OrderDTO> orders = orderDAO.getAllOrders();
-        // Load order details for each order
-        for (OrderDTO order : orders) {
-            order.setOrderDetails(orderDAO.getOrderDetails(order.getOrderId()));
+        try {
+            List<OrderDTO> orders = orderDAO.getAllOrders();
+            if (orders == null) {
+                return new java.util.ArrayList<>();
+            }
+            // Load order details for each order
+            for (OrderDTO order : orders) {
+                if (order != null) {
+                    order.setOrderDetails(orderDAO.getOrderDetails(order.getOrderId()));
+                    if (order.getOrderDetails() == null) {
+                        order.setOrderDetails(new java.util.ArrayList<>());
+                    }
+                }
+            }
+            return orders;
+        } catch (Exception e) {
+            System.err.println("ERROR in getAllOrders: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return new java.util.ArrayList<>();
         }
-        return orders;
     }
 
     public boolean cancelOrder(int orderId, String userId) {

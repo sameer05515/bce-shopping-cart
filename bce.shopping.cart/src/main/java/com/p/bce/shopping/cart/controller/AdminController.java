@@ -32,9 +32,28 @@ public class AdminController {
 			return "redirect:/pages/html/preLogin/Unauthorised.html";
 		}
 
-		model.addAttribute("books", bookDetailsBC.getAllBooks());
-		model.addAttribute("categories", categoryDetailsBC.getAllCategoryDetails());
-		return "admin/BookList";
+		try {
+			java.util.List<BookDetailDTO> books = bookDetailsBC.getAllBooks();
+			if (books == null) {
+				books = new java.util.ArrayList<>();
+			}
+			model.addAttribute("books", books);
+			
+			java.util.List<CategoryDetailsDTO> categories = categoryDetailsBC.getAllCategoryDetails();
+			if (categories == null) {
+				categories = new java.util.ArrayList<>();
+			}
+			model.addAttribute("categories", categories);
+			
+			return "admin/BookList";
+		} catch (Exception e) {
+			System.err.println("ERROR in listBooks: " + e.getClass().getName() + ": " + e.getMessage());
+			e.printStackTrace();
+			model.addAttribute("error", "Error loading books: " + e.getMessage());
+			model.addAttribute("books", new java.util.ArrayList<BookDetailDTO>());
+			model.addAttribute("categories", new java.util.ArrayList<CategoryDetailsDTO>());
+			return "admin/BookList";
+		}
 	}
 
 	@GetMapping("/admin/books/add")
