@@ -13,7 +13,7 @@
 	<groupId>com.p.bce.shopping.cart</groupId>
 	<artifactId>bce.shopping.cart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>BceShoppingCart</name>
 	<description>Rewriting Shopping Cart Application with Spring Boot</description>
 
@@ -34,16 +34,10 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		
-		<!-- JSP Support -->
+		<!-- Thymeleaf Template Engine -->
 		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-		</dependency>
-		
-		<!-- JSTL for JSP -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		
 		<!-- MySQL Connector -->

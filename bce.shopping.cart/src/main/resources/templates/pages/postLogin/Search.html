@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+    <script th:src="@{/pages/lib/js/SearchItems.js}"></script>
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>📚 Search Results</h1>
+        </div>
+
+        <div th:if="${searchResults == null or searchResults.isEmpty()}">
+            <div class="alert alert-info">
+                <strong>No Results Found:</strong> Please try a different search criteria.
+            </div>
+        </div>
+
+        <div th:if="${searchResults != null and !searchResults.isEmpty()}">
+            <div class="card">
+                <div class="card-header">
+                    Found <span th:text="${#lists.size(searchResults)}">0</span> Book(s)
+                </div>
+                
+                <form th:action="@{/cart/add}" method="POST" name="cart">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Select</th>
+                                    <th>Book Name</th>
+                                    <th>Author Name</th>
+                                    <th>Publisher</th>
+                                    <th>Edition</th>
+                                    <th>Price (₹)</th>
+                                    <th>Quantity Available</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="book, iterStat : ${searchResults}">
+                                    <td th:text="${iterStat.count}">1</td>
+                                    <td>
+                                        <input type="checkbox" name="bookIds" 
+                                               th:value="${book.bookId}">
+                                    </td>
+                                    <td><strong th:text="${book.title}">Book Title</strong></td>
+                                    <td th:text="${book.author}">Author</td>
+                                    <td th:text="${book.publisher}">Publisher</td>
+                                    <td th:text="${book.edition}">Edition</td>
+                                    <td><strong style="color: #28a745;">₹<span th:text="${book.price}">0</span></strong></td>
+                                    <td th:text="${book.quantity}">0</td>
+                                    <td th:text="${book.description}">Description</td>
+                                    <td th:text="${book.categoryName}">Category</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-success">
+                            🛒 Add Selected to Cart
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <hr style="margin: 30px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+            <div class="card">
+                <div class="card-header">🔍 Search More Books</div>
+                
+                <form th:action="@{/pages/html/postLogin/Search}" name="newsrc" method="POST" class="search-form">
+                    <div class="radio-group">
+                        <input type="radio" id="newSearchCategory" name="R1" value="Category" checked>
+                        <label for="newSearchCategory">Search By Category</label>
+                        <select name="BookCategory" class="form-control" style="max-width: 300px; margin-left: 20px;">
+                            <option value="Select" selected>Select Category</option>
+                            <option th:each="category : ${categories}" 
+                                    th:value="${category.categoryName}" 
+                                    th:text="${category.categoryName}">
+                                Category Name
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="radio-group">
+                        <input type="radio" id="newSearchTitle" name="R1" value="Title">
+                        <label for="newSearchTitle">Search By Book Title</label>
+                        <input type="text" name="BookTitle" class="form-control" 
+                               placeholder="Enter book title" style="max-width: 300px; margin-left: 20px;">
+                    </div>
+
+                    <div class="radio-group">
+                        <input type="radio" id="newSearchAuthor" name="R1" value="Author">
+                        <label for="newSearchAuthor">Search By Book Author</label>
+                        <input type="text" name="BookAuthor" class="form-control" 
+                               placeholder="Enter author name" style="max-width: 300px; margin-left: 20px;">
+                    </div>
+
+                    <div class="radio-group">
+                        <input type="radio" id="newSearchPublisher" name="R1" value="Publisher">
+                        <label for="newSearchPublisher">Search By Book Publisher</label>
+                        <input type="text" name="BookPublisher" class="form-control" 
+                               placeholder="Enter publisher name" style="max-width: 300px; margin-left: 20px;">
+                    </div>
+
+                    <div class="radio-group">
+                        <input type="radio" id="advancedSearch" name="R2" value="A">
+                        <label for="advancedSearch">Advanced Search</label>
+                        <input type="radio" id="newSearch" name="R2" value="N" checked style="margin-left: 20px;">
+                        <label for="newSearch">New Search</label>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">🔍 Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

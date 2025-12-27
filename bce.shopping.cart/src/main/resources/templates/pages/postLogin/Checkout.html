@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>💳 Checkout</h1>
+        </div>
+
+        <div th:if="${cartItems == null or cartItems.isEmpty()}" class="alert alert-error">
+            Your cart is empty. <a th:href="@{/pages/html/postLogin/SearchCriteria}">Continue Shopping</a>
+        </div>
+
+        <div th:if="${cartItems != null and !cartItems.isEmpty()}">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                <!-- Order Summary -->
+                <div class="card">
+                    <div class="card-header">Order Summary</div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Book</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${cartItems}">
+                                    <td>
+                                        <strong th:text="${item.title}">Book Title</strong><br>
+                                        <small>by <span th:text="${item.author}">Author</span></small>
+                                    </td>
+                                    <td th:text="${item.quantity}">1</td>
+                                    <td>₹<span th:text="${#numbers.formatDecimal(item.price, 0, 2)}">0.00</span></td>
+                                    <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)}">0.00</span></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Order Total & Place Order -->
+                <div class="card">
+                    <div class="card-header">Order Total</div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Subtotal:</span>
+                            <span>₹<span th:text="${subtotal != null ? #numbers.formatDecimal(subtotal, 0, 2) : '0.00'}">0.00</span></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                        </div>
+                        <hr style="margin: 20px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <strong>Total:</strong>
+                            <strong style="font-size: 1.3em; color: #667eea;">₹<span th:text="${total != null ? #numbers.formatDecimal(total, 0, 2) : '0.00'}">0.00</span></strong>
+                        </div>
+                        
+                        <form method="POST" th:action="@{/pages/html/postLogin/PlaceOrder}">
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1em;">
+                                ✅ Place Order
+                            </button>
+                        </form>
+                        
+                        <a th:href="@{/pages/html/postLogin/Cart}" class="btn btn-secondary" 
+                           style="width: 100%; margin-top: 10px; padding: 15px;">
+                            ← Back to Cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>📄 Order Details</h1>
+        </div>
+
+        <div th:if="${order != null}">
+            <div class="card">
+                <div class="card-header">Order Information</div>
+                <div class="profile-info">
+                    <div class="profile-label">Order ID:</div>
+                    <div class="profile-value"><strong>#<span th:text="${order.orderId}">0</span></strong></div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Order Date:</div>
+                    <div class="profile-value">
+                        <span th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Status:</div>
+                    <div class="profile-value">
+                        <span style="padding: 5px 10px; border-radius: 5px; background: #667eea; color: white;">
+                            <span th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Total Amount:</div>
+                    <div class="profile-value">
+                        <strong style="font-size: 1.2em; color: #28a745;">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)}">0.00</span></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Order Items</div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${order.orderDetails != null}" th:each="detail : ${order.orderDetails}">
+                                <td>
+                                    <strong th:text="${detail.bookTitle != null ? detail.bookTitle : 'Book ID: ' + detail.bookId}">Book Title</strong><br>
+                                    <small th:if="${detail.bookAuthor != null}">by <span th:text="${detail.bookAuthor}">Author</span></small>
+                                </td>
+                                <td th:text="${detail.quantity}">1</td>
+                                <td>₹<span th:text="${#numbers.formatDecimal(detail.price, 0, 2)}">0.00</span></td>
+                                <td><strong>₹<span th:text="${#numbers.formatDecimal(detail.subtotal, 0, 2)}">0.00</span></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a th:href="@{/pages/html/postLogin/OrderHistory}" class="btn btn-secondary">← Back to Orders</a>
+                <form th:if="${order.status == 'PENDING' or order.status == 'CONFIRMED'}" 
+                      method="POST" th:action="@{/pages/html/postLogin/Order/Cancel}" 
+                      style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                    <input type="hidden" name="id" th:value="${order.orderId}">
+                    <button type="submit" class="btn btn-danger">❌ Cancel Order</button>
+                </form>
+            </div>
+        </div>
+        
+        <div th:if="${order == null}" class="alert alert-error">
+            Order not found.
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Management - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>📚 Book Management</h1>
+        </div>
+
+        <div th:if="${message != null}" class="alert alert-success">
+            <strong>Success:</strong> <span th:text="${message}">Message</span>
+        </div>
+
+        <div th:if="${error != null}" class="alert alert-error">
+            <strong>Error:</strong> <span th:text="${error}">Error</span>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="card-header" style="margin: 0;">All Books (<span th:text="${books != null ? #lists.size(books) : 0}">0</span>)</div>
+                <a th:href="@{/admin/books/add}" class="btn btn-primary">➕ Add New Book</a>
+            </div>
+
+            <div th:if="${books == null or books.isEmpty()}">
+                <div class="alert alert-info">
+                    No books found. <a th:href="@{/admin/books/add}">Add your first book</a>
+                </div>
+            </div>
+
+            <div th:if="${books != null and !books.isEmpty()}">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Publisher</th>
+                                <th>Category</th>
+                                <th>Price (₹)</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="book : ${books}">
+                                <td th:text="${book.bookId}">0</td>
+                                <td><strong th:text="${book.title}">Title</strong></td>
+                                <td th:text="${book.author}">Author</td>
+                                <td th:text="${book.publisher}">Publisher</td>
+                                <td>
+                                    <span th:each="category : ${categories}" 
+                                          th:if="${category.categoryId == book.categoryId}" 
+                                          th:text="${category.categoryName}">Category</span>
+                                </td>
+                                <td><strong style="color: #28a745;">₹<span th:text="${#numbers.formatDecimal(book.price, 0, 2)}">0.00</span></strong></td>
+                                <td>
+                                    <span th:if="${book.quantity <= 5}" 
+                                          style="color: #dc3545; font-weight: bold;" 
+                                          th:text="${book.quantity + ' (Low Stock)'}">0</span>
+                                    <span th:unless="${book.quantity <= 5}" th:text="${book.quantity}">0</span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 10px;">
+                                        <a th:href="@{/admin/books/edit(id=${book.bookId})}" 
+                                           class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.9em;">
+                                            ✏️ Edit
+                                        </a>
+                                        <form method="POST" th:action="@{/admin/books/delete}" 
+                                              style="display: inline;"
+                                              onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                            <input type="hidden" name="id" th:value="${book.bookId}">
+                                            <button type="submit" class="btn btn-danger" 
+                                                    style="padding: 5px 15px; font-size: 0.9em;">
+                                                🗑️ Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

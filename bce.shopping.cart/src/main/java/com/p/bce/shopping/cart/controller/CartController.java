@@ -47,7 +47,7 @@ public class CartController {
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("total", subtotal); // For now, no tax/shipping
 
-        return "pages/html/postLogin/Cart";
+        return "pages/postLogin/Cart";
     }
 
     @PostMapping("/pages/html/postLogin/Inter_Cart.jsp")
@@ -63,7 +63,7 @@ public class CartController {
 
         if (bookIds == null || bookIds.length == 0) {
             redirectAttributes.addFlashAttribute("error", "Please select at least one book to add to cart.");
-            return "redirect:/pages/html/postLogin/Search.jsp";
+            return "redirect:/pages/html/postLogin/Search";
         }
 
         @SuppressWarnings("unchecked")
@@ -114,7 +114,7 @@ public class CartController {
 
         session.setAttribute("cart", cart);
         redirectAttributes.addFlashAttribute("message", "Items added to cart successfully!");
-        return "redirect:/pages/html/postLogin/Cart.jsp";
+        return "redirect:/pages/html/postLogin/Cart";
     }
 
     @PostMapping("/pages/html/postLogin/Cart/update")
@@ -132,7 +132,7 @@ public class CartController {
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null) {
-            return "redirect:/pages/html/postLogin/Cart.jsp";
+            return "redirect:/pages/html/postLogin/Cart";
         }
 
         // Update quantity
@@ -150,7 +150,7 @@ public class CartController {
         }
 
         session.setAttribute("cart", cart);
-        return "redirect:/pages/html/postLogin/Cart.jsp";
+        return "redirect:/pages/html/postLogin/Cart";
     }
 
     @PostMapping("/pages/html/postLogin/Cart/remove")
@@ -170,7 +170,7 @@ public class CartController {
             session.setAttribute("cart", cart);
         }
 
-        return "redirect:/pages/html/postLogin/Cart.jsp";
+        return "redirect:/pages/html/postLogin/Cart";
     }
 
     @PostMapping("/pages/html/postLogin/Cart/clear")
@@ -181,7 +181,7 @@ public class CartController {
         }
 
         session.removeAttribute("cart");
-        return "redirect:/pages/html/postLogin/Cart.jsp";
+        return "redirect:/pages/html/postLogin/Cart";
     }
 
 }

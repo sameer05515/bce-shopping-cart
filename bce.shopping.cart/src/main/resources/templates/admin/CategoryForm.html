@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category != null and category.categoryId > 0 ? 'Edit Category' : 'Add Category'} + ' - BCE Shopping Cart'">Category Form - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1 th:text="${category != null and category.categoryId > 0 ? '✏️ Edit Category' : '➕ Add New Category'}">Category Form</h1>
+        </div>
+
+        <form method="POST" th:action="@{/admin/categories/save}" class="card">
+            <input th:if="${category != null and category.categoryId > 0}" 
+                   type="hidden" name="categoryId" th:value="${category.categoryId}">
+
+            <div class="form-group">
+                <label for="categoryName" class="required">Category Name</label>
+                <input type="text" id="categoryName" name="categoryName" class="form-control" 
+                       th:value="${category != null ? category.categoryName : ''}" 
+                       placeholder="Enter category name" required>
+                <small style="color: #6c757d; margin-top: 5px; display: block;">
+                    Category names must be unique.
+                </small>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    💾 <span th:text="${category != null and category.categoryId > 0 ? 'Update Category' : 'Create Category'}">Save</span>
+                </button>
+                <a th:href="@{/admin/categories}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

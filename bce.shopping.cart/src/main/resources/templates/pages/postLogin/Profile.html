@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - BCE Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+</head>
+<body class="body-style">
+    <div th:replace="~{common/header :: header}"></div>
+    
+    <div class="page-container">
+        <div class="page-header">
+            <h1>👤 My Profile</h1>
+        </div>
+    
+        <div th:if="${error != null}" class="alert alert-error">
+            <strong>Error:</strong> <span th:text="${error}">Error message</span>
+        </div>
+        
+        <div th:if="${success != null}" class="alert alert-success">
+            <strong>Success:</strong> <span th:text="${success}">Success message</span>
+        </div>
+        
+        <div th:if="${profile != null}">
+            <div class="profile-card">
+                <div class="card-header">Personal Information</div>
+                <div class="profile-info">
+                    <div class="profile-label">Username:</div>
+                    <div class="profile-value" th:text="${profile.userName}">Username</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">First Name:</div>
+                    <div class="profile-value" th:text="${profile.firstName}">First Name</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Middle Name:</div>
+                    <div class="profile-value" th:text="${profile.middleName != null and !profile.middleName.isEmpty()} ? ${profile.middleName} : '—'">Middle Name</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Last Name:</div>
+                    <div class="profile-value" th:text="${profile.lastName}">Last Name</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Email:</div>
+                    <div class="profile-value" th:text="${profile.email}">Email</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Phone:</div>
+                    <div class="profile-value" th:text="${profile.phone}">Phone</div>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <div class="card-header">Address Information</div>
+                <div class="profile-info">
+                    <div class="profile-label">Address Line 1:</div>
+                    <div class="profile-value" th:text="${profile.address1}">Address 1</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Address Line 2:</div>
+                    <div class="profile-value" th:text="${profile.address2 != null and !profile.address2.isEmpty()} ? ${profile.address2} : '—'">Address 2</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">City:</div>
+                    <div class="profile-value" th:text="${profile.city}">City</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">State:</div>
+                    <div class="profile-value" th:text="${profile.state}">State</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">Pin Code:</div>
+                    <div class="profile-value" th:text="${profile.pinCode}">Pin Code</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-primary">
+                    ✏️ Edit Profile
+                </a>
+                <a th:href="@{/pages/html/postLogin/ChangePassword}" class="btn btn-secondary">
+                    🔒 Change Password
+                </a>
+            </div>
+        </div>
+        
+        <div th:if="${profile == null}" class="alert alert-error">
+            Profile not found.
+        </div>
+    </div>
+    
+    <div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>
+

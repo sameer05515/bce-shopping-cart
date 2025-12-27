@@ -28,9 +28,15 @@ public class SearchController {
 			return "redirect:/pages/html/preLogin/Unauthorised.html";
 		}
 		
-		List<CategoryDetailsDTO> listCategDet = categoryDetailsBC.getAllCategoryDetails();
-		model.addAttribute("categories", listCategDet);
-		return "pages/html/postLogin/SearchCriteria"; // Will resolve to /WEB-INF/views/pages/html/postLogin/SearchCriteria.jsp
+		try {
+			List<CategoryDetailsDTO> listCategDet = categoryDetailsBC.getAllCategoryDetails();
+			model.addAttribute("categories", listCategDet);
+			return "pages/postLogin/SearchCriteria"; // Thymeleaf template
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("error", "Error loading categories: " + e.getMessage());
+			return "pages/html/postLogin/SearchCriteria";
+		}
 	}
 
 	@PostMapping("/pages/html/postLogin/Search.jsp")
@@ -105,7 +111,7 @@ public class SearchController {
 		model.addAttribute("categories", listCategDet);
 		model.addAttribute("counter", counter);
 		
-		return "pages/html/postLogin/Search"; // Will resolve to /WEB-INF/views/pages/html/postLogin/Search.jsp
+		return "pages/postLogin/Search"; // Thymeleaf template
 	}
 }
 

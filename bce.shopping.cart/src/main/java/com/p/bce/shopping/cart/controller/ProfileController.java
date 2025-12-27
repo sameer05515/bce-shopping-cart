@@ -33,11 +33,11 @@ public class ProfileController {
 		UserProfileDTO profile = userProfileBC.getUserProfile(userName);
 		if (profile == null) {
 			model.addAttribute("error", "Profile not found");
-			return "redirect:/pages/html/postLogin/SearchCriteria.jsp";
+			return "redirect:/pages/html/postLogin/SearchCriteria";
 		}
 
 		model.addAttribute("profile", profile);
-		return "pages/html/postLogin/Profile";
+		return "pages/postLogin/Profile";
 	}
 
 	/**
@@ -53,11 +53,11 @@ public class ProfileController {
 		UserProfileDTO profile = userProfileBC.getUserProfile(userName);
 		if (profile == null) {
 			model.addAttribute("error", "Profile not found");
-			return "redirect:/pages/html/postLogin/Profile.jsp";
+			return "redirect:/pages/html/postLogin/Profile";
 		}
 
 		model.addAttribute("profile", profile);
-		return "pages/html/postLogin/EditProfile";
+		return "pages/postLogin/EditProfile";
 	}
 
 	/**
@@ -100,11 +100,11 @@ public class ProfileController {
 		boolean success = userProfileBC.updateProfile(profile);
 		if (success) {
 			redirectAttributes.addFlashAttribute("success", "Profile updated successfully");
-			return "redirect:/pages/html/postLogin/Profile.jsp";
+			return "redirect:/pages/html/postLogin/Profile";
 		} else {
 			model.addAttribute("error", "Failed to update profile. Please try again.");
 			model.addAttribute("profile", profile);
-			return "pages/html/postLogin/EditProfile";
+			return "pages/postLogin/EditProfile";
 		}
 	}
 
@@ -117,7 +117,7 @@ public class ProfileController {
 		if (userName == null) {
 			return "redirect:/pages/html/preLogin/Unauthorised.html";
 		}
-		return "pages/html/postLogin/ChangePassword";
+		return "pages/postLogin/ChangePassword";
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class ProfileController {
 			model.addAttribute("error", result);
 		}
 
-		return "pages/html/postLogin/ChangePassword";
+		return "pages/postLogin/ChangePassword";
 	}
 }
 

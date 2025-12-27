@@ -39,7 +39,7 @@ public class UserController {
 		if ("Administrator".equalsIgnoreCase(userAuth.getUserName())) {
 			return "redirect:/pages/html/postLogin/Admin.html";
 		} else {
-			return "redirect:/pages/html/postLogin/SearchCriteria.jsp";
+			return "redirect:/pages/html/postLogin/SearchCriteria";
 		}
 	}
 

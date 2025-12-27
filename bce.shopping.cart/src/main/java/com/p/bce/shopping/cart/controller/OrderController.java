@@ -35,7 +35,7 @@ public class OrderController {
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
-            return "redirect:/pages/html/postLogin/Cart.jsp";
+            return "redirect:/pages/html/postLogin/Cart";
         }
 
         // Calculate totals
@@ -48,7 +48,7 @@ public class OrderController {
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("total", subtotal);
 
-        return "pages/html/postLogin/Checkout";
+        return "pages/postLogin/Checkout";
     }
 
     @PostMapping("/pages/html/postLogin/PlaceOrder.jsp")
@@ -62,7 +62,7 @@ public class OrderController {
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Your cart is empty.");
-            return "redirect:/pages/html/postLogin/Cart.jsp";
+            return "redirect:/pages/html/postLogin/Cart";
         }
 
         // Calculate total
@@ -94,10 +94,10 @@ public class OrderController {
             // Clear cart
             session.removeAttribute("cart");
             redirectAttributes.addFlashAttribute("message", "Order placed successfully! Order ID: " + orderId);
-            return "redirect:/pages/html/postLogin/OrderHistory.jsp";
+            return "redirect:/pages/html/postLogin/OrderHistory";
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to place order. Please check stock availability.");
-            return "redirect:/pages/html/postLogin/Cart.jsp";
+            return "redirect:/pages/html/postLogin/Cart";
         }
     }
 
@@ -111,7 +111,7 @@ public class OrderController {
         List<OrderDTO> orders = orderBC.getOrdersByUser(userName);
         model.addAttribute("orders", orders);
 
-        return "pages/html/postLogin/OrderHistory";
+        return "pages/postLogin/OrderHistory";
     }
 
     @GetMapping("/pages/html/postLogin/OrderDetails.jsp")
@@ -127,7 +127,7 @@ public class OrderController {
 
         OrderDTO order = orderBC.getOrderById(orderId);
         if (order == null) {
-            return "redirect:/pages/html/postLogin/OrderHistory.jsp?error=Order not found";
+            return "redirect:/pages/html/postLogin/OrderHistory?error=Order not found";
         }
 
         // Verify user owns the order
@@ -136,7 +136,7 @@ public class OrderController {
         }
 
         model.addAttribute("order", order);
-        return "pages/html/postLogin/OrderDetails";
+        return "pages/postLogin/OrderDetails";
     }
 
     @PostMapping("/pages/html/postLogin/Order/Cancel")
