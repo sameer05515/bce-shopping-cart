@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.p.bce.shopping.cart.rpc.bc.OrderBC;
+import com.p.bce.shopping.cart.rpc.bc.UserProfileBC;
 import com.p.bce.shopping.cart.rpc.pojo.CartItemDTO;
 import com.p.bce.shopping.cart.rpc.pojo.OrderDTO;
 import com.p.bce.shopping.cart.rpc.pojo.OrderDetailDTO;
@@ -24,6 +25,9 @@ public class OrderController {
 
     @Autowired
     private OrderBC orderBC;
+    
+    @Autowired
+    private UserProfileBC userProfileBC;
 
     @GetMapping({"/pages/html/postLogin/Checkout.jsp", "/pages/html/postLogin/Checkout"})
     public String checkout(HttpSession session, Model model) {
@@ -43,15 +47,39 @@ public class OrderController {
         }
 
         System.out.println("Cart has " + cart.size() + " items");
+        
+        // Load user profile for shipping address
+        try {
+            com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO userProfile = userProfileBC.getUserProfile(userName);
+            model.addAttribute("userProfile", userProfile);
+        } catch (Exception e) {
+            System.err.println("Error loading user profile: " + e.getMessage());
+        }
+        
         // Calculate totals
         BigDecimal subtotal = BigDecimal.ZERO;
         for (CartItemDTO item : cart) {
             subtotal = subtotal.add(item.getSubtotal());
         }
+        
+        // Calculate tax (18% GST)
+        BigDecimal taxRate = new BigDecimal("0.18");
+        BigDecimal tax = subtotal.multiply(taxRate);
+        
+        // Calculate shipping (Free for orders above ₹500, otherwise ₹50)
+        BigDecimal shipping = BigDecimal.ZERO;
+        if (subtotal.compareTo(new BigDecimal("500")) < 0) {
+            shipping = new BigDecimal("50");
+        }
+        
+        // Calculate total
+        BigDecimal total = subtotal.add(tax).add(shipping);
 
         model.addAttribute("cartItems", cart);
         model.addAttribute("subtotal", subtotal);
-        model.addAttribute("total", subtotal);
+        model.addAttribute("tax", tax);
+        model.addAttribute("shipping", shipping);
+        model.addAttribute("total", total);
 
         System.out.println("Returning view: pages/postLogin/Checkout");
         return "pages/postLogin/Checkout";
@@ -64,7 +92,10 @@ public class OrderController {
     }
 
     @PostMapping({"/pages/html/postLogin/PlaceOrder.jsp", "/pages/html/postLogin/PlaceOrder"})
-    public String placeOrder(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String placeOrder(
+            @RequestParam(value = "orderNotes", required = false) String orderNotes,
+            HttpSession session, 
+            RedirectAttributes redirectAttributes) {
         System.out.println("OrderController.placeOrder() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
@@ -83,11 +114,24 @@ public class OrderController {
 
         System.out.println("Cart has " + cart.size() + " items");
 
-        // Calculate total
-        BigDecimal total = BigDecimal.ZERO;
+        // Calculate totals (same as checkout page)
+        BigDecimal subtotal = BigDecimal.ZERO;
         for (CartItemDTO item : cart) {
-            total = total.add(item.getSubtotal());
+            subtotal = subtotal.add(item.getSubtotal());
         }
+        
+        // Calculate tax (18% GST)
+        BigDecimal taxRate = new BigDecimal("0.18");
+        BigDecimal tax = subtotal.multiply(taxRate);
+        
+        // Calculate shipping (Free for orders above ₹500, otherwise ₹50)
+        BigDecimal shipping = BigDecimal.ZERO;
+        if (subtotal.compareTo(new BigDecimal("500")) < 0) {
+            shipping = new BigDecimal("50");
+        }
+        
+        // Calculate total
+        BigDecimal total = subtotal.add(tax).add(shipping);
 
         // Create order
         OrderDTO order = new OrderDTO();
@@ -95,6 +139,12 @@ public class OrderController {
         order.setTotalAmount(total);
         order.setOrderDate(new Date());
         order.setStatus("PENDING");
+        
+        // Store order notes in session for now (can be added to order table later)
+        if (orderNotes != null && !orderNotes.trim().isEmpty()) {
+            session.setAttribute("orderNotes_" + userName, orderNotes);
+            System.out.println("Order notes: " + orderNotes);
+        }
 
         // Convert cart items to order details
         List<OrderDetailDTO> orderDetails = new java.util.ArrayList<>();

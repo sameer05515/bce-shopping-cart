@@ -20,45 +20,94 @@
 
         <div th:if="${cartItems != null and !cartItems.isEmpty()}">
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
-                <!-- Order Summary -->
-                <div class="card">
-                    <div class="card-header">Order Summary</div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Book</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="item : ${cartItems}">
-                                    <td>
-                                        <strong th:text="${item.title}">Book Title</strong><br>
-                                        <small>by <span th:text="${item.author}">Author</span></small>
-                                    </td>
-                                    <td th:text="${item.quantity}">1</td>
-                                    <td>₹<span th:text="${#numbers.formatDecimal(item.price, 0, 2)}">0.00</span></td>
-                                    <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)}">0.00</span></strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Left Column: Shipping Address & Order Summary -->
+                <div>
+                    <!-- Shipping Address -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header">📦 Shipping Address</div>
+                        <div style="padding: 20px;">
+                            <div th:if="${userProfile != null}">
+                                <p><strong th:text="${userProfile.firstName + ' ' + (userProfile.middleName != null ? userProfile.middleName + ' ' : '') + userProfile.lastName}">Full Name</strong></p>
+                                <p th:text="${userProfile.address1}">Address Line 1</p>
+                                <p th:if="${userProfile.address2 != null and !userProfile.address2.isEmpty()}" th:text="${userProfile.address2}">Address Line 2</p>
+                                <p th:text="${userProfile.city + ', ' + userProfile.state + ' - ' + userProfile.pinCode}">City, State - Pincode</p>
+                                <p>📞 <span th:text="${userProfile.phone}">Phone</span></p>
+                                <p>📧 <span th:text="${userProfile.email}">Email</span></p>
+                                <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-secondary btn-sm" style="margin-top: 10px;">
+                                    ✏️ Update Address
+                                </a>
+                            </div>
+                            <div th:if="${userProfile == null}" class="alert alert-warning">
+                                Please update your profile with shipping address.
+                                <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-primary btn-sm">Update Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="card">
+                        <div class="card-header">📋 Order Summary</div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Book</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${cartItems}">
+                                        <td>
+                                            <strong th:text="${item.title}">Book Title</strong><br>
+                                            <small>by <span th:text="${item.author}">Author</span></small>
+                                        </td>
+                                        <td th:text="${item.quantity}">1</td>
+                                        <td>₹<span th:text="${#numbers.formatDecimal(item.price, 0, 2)}">0.00</span></td>
+                                        <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)}">0.00</span></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Notes -->
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header">📝 Order Notes (Optional)</div>
+                        <div style="padding: 20px;">
+                            <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
+                                Add any special instructions or notes for your order
+                            </p>
+                            <textarea name="orderNotes" rows="4" class="form-control" 
+                                      placeholder="e.g., Delivery instructions, gift message, etc." 
+                                      style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Order Total & Place Order -->
+                <!-- Right Column: Order Total & Place Order -->
                 <div class="card">
-                    <div class="card-header">Order Total</div>
+                    <div class="card-header">💰 Order Total</div>
                     <div style="padding: 20px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                             <span>Subtotal:</span>
                             <span>₹<span th:text="${subtotal != null ? #numbers.formatDecimal(subtotal, 0, 2) : '0.00'}">0.00</span></span>
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>Tax (GST 18%):</span>
+                            <span>₹<span th:text="${tax != null ? #numbers.formatDecimal(tax, 0, 2) : '0.00'}">0.00</span></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                             <span>Shipping:</span>
-                            <span>Free</span>
+                            <span th:if="${shipping != null and shipping.compareTo(java.math.BigDecimal.ZERO) == 0}" style="color: #28a745;">Free</span>
+                            <span th:if="${shipping == null or shipping.compareTo(java.math.BigDecimal.ZERO) > 0}">
+                                ₹<span th:text="${shipping != null ? #numbers.formatDecimal(shipping, 0, 2) : '0.00'}">0.00</span>
+                            </span>
+                        </div>
+                        <div th:if="${subtotal != null and subtotal.compareTo(new java.math.BigDecimal('500')) < 0}" 
+                             style="font-size: 0.85em; color: #666; margin-bottom: 15px;">
+                            💡 Add ₹<span th:text="${#numbers.formatDecimal(new java.math.BigDecimal('500').subtract(subtotal), 0, 2)}">0.00</span> more for free shipping!
                         </div>
                         <hr style="margin: 20px 0;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
@@ -66,11 +115,25 @@
                             <strong style="font-size: 1.3em; color: #667eea;">₹<span th:text="${total != null ? #numbers.formatDecimal(total, 0, 2) : '0.00'}">0.00</span></strong>
                         </div>
                         
-                        <form method="POST" th:action="@{/pages/html/postLogin/PlaceOrder}">
+                        <form method="POST" th:action="@{/pages/html/postLogin/PlaceOrder}" id="placeOrderForm">
                             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1em;">
                                 ✅ Place Order
                             </button>
                         </form>
+                        <script>
+                            // Copy order notes from left column to form on submit
+                            document.getElementById('placeOrderForm').addEventListener('submit', function(e) {
+                                var notesTextarea = document.querySelector('.card textarea[name="orderNotes"]');
+                                if (notesTextarea) {
+                                    var notes = notesTextarea.value;
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'orderNotes';
+                                    hiddenInput.value = notes;
+                                    this.appendChild(hiddenInput);
+                                }
+                            });
+                        </script>
                         
                         <a th:href="@{/pages/html/postLogin/Cart}" class="btn btn-secondary" 
                            style="width: 100%; margin-top: 10px; padding: 15px;">

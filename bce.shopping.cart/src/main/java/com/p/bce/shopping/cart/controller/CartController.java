@@ -47,10 +47,26 @@ public class CartController {
         for (CartItemDTO item : cart) {
             subtotal = subtotal.add(item.getSubtotal());
         }
+        
+        // Calculate estimated tax (18% GST)
+        BigDecimal taxRate = new BigDecimal("0.18");
+        BigDecimal estimatedTax = subtotal.multiply(taxRate);
+        
+        // Calculate estimated shipping (Free for orders above ₹500, otherwise ₹50)
+        BigDecimal estimatedShipping = BigDecimal.ZERO;
+        if (subtotal.compareTo(new BigDecimal("500")) < 0) {
+            estimatedShipping = new BigDecimal("50");
+        }
+        
+        // Calculate estimated total
+        BigDecimal estimatedTotal = subtotal.add(estimatedTax).add(estimatedShipping);
 
         model.addAttribute("cartItems", cart);
         model.addAttribute("subtotal", subtotal);
-        model.addAttribute("total", subtotal); // For now, no tax/shipping
+        model.addAttribute("estimatedTax", estimatedTax);
+        model.addAttribute("estimatedShipping", estimatedShipping);
+        model.addAttribute("estimatedTotal", estimatedTotal);
+        model.addAttribute("total", subtotal); // Keep for backward compatibility
 
         System.out.println("Returning view: pages/postLogin/Cart");
         return "pages/postLogin/Cart";
