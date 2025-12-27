@@ -4,147 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - BCE Shopping Cart</title>
-    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
     <script th:src="@{/pages/lib/js/EditProfile.js}"></script>
 </head>
-<body class="body-style">
+<body>
     <div th:replace="~{common/header :: header}"></div>
     
-    <div class="page-container">
-        <div class="page-header">
-            <h1>✏️ Edit Profile</h1>
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-pencil"></i> Edit Profile</h1>
         </div>
 
-        <div th:if="${error != null}" class="alert alert-error">
-            <strong>Error:</strong> <span th:text="${error}">Error message</span>
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error:</strong> <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
         <div th:if="${profile != null}">
             <form name="editProfileFrm" method="POST" th:action="@{/pages/html/postLogin/UpdateProfile}" 
-                  onsubmit="return validate();" class="card">
-                <p style="color: #e74c3c; margin-bottom: 20px; font-weight: 600;">
-                    <span style="color: #e74c3c;">*</span> Fields marked with asterisk are mandatory
-                </p>
+                  onsubmit="return validate();" class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-gear"></i> Update Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> Fields marked with <span class="text-danger">*</span> are mandatory
+                    </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label><b>Username:</b></label>
-                        <div style="padding: 12px 15px; background: #f8f9fa; border-radius: 8px; color: #6c757d;">
-                            <span th:text="${profile.userName}">Username</span> <small>(cannot be changed)</small>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label"><b>Username:</b></label>
+                            <div class="form-control bg-light" style="border: 1px solid #dee2e6;">
+                                <span th:text="${profile.userName}">Username</span> 
+                                <small class="text-muted">(cannot be changed)</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                            <input type="text" id="FirstName" name="FirstName" class="form-control" 
+                                   th:value="${profile.firstName}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="MiddleName" class="form-label">Middle Name</label>
+                            <input type="text" id="MiddleName" name="MiddleName" class="form-control" 
+                                   th:value="${profile.middleName != null ? profile.middleName : ''}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" id="LastName" name="LastName" class="form-control" 
+                                   th:value="${profile.lastName}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" id="Email" name="Email" class="form-control" 
+                                   th:value="${profile.email}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="Phone" class="form-label">Phone <span class="text-danger">*</span></label>
+                            <input type="tel" id="Phone" name="Phone" class="form-control" 
+                                   th:value="${profile.phone}" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Address1" class="form-label">Address Line 1 <span class="text-danger">*</span></label>
+                            <input type="text" id="Address1" name="Address1" class="form-control" 
+                                   th:value="${profile.address1}" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Address2" class="form-label">Address Line 2</label>
+                            <input type="text" id="Address2" name="Address2" class="form-control" 
+                                   th:value="${profile.address2 != null ? profile.address2 : ''}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="City" class="form-label">City <span class="text-danger">*</span></label>
+                            <input type="text" id="City" name="City" class="form-control" 
+                                   th:value="${profile.city}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="State" class="form-label">State <span class="text-danger">*</span></label>
+                            <input type="text" id="State" name="State" class="form-control" 
+                                   th:value="${profile.state}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="PinCode" class="form-label">Pin Code <span class="text-danger">*</span></label>
+                            <input type="text" id="PinCode" name="PinCode" class="form-control" 
+                                   th:value="${profile.pinCode}" required>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="FirstName" class="required">First Name</label>
-                        <input type="text" id="FirstName" name="FirstName" class="form-control" 
-                               th:value="${profile.firstName}" required>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a th:href="@{/pages/html/postLogin/Profile}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Update Profile
+                        </button>
                     </div>
-
-                    <div class="form-group">
-                        <label for="MiddleName">Middle Name</label>
-                        <input type="text" id="MiddleName" name="MiddleName" class="form-control" 
-                               th:value="${profile.middleName != null ? profile.middleName : ''}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="LastName" class="required">Last Name</label>
-                        <input type="text" id="LastName" name="LastName" class="form-control" 
-                               th:value="${profile.lastName}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="Email" class="required">Email</label>
-                        <input type="email" id="Email" name="Email" class="form-control" 
-                               th:value="${profile.email}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="Phone" class="required">Phone</label>
-                        <input type="text" id="Phone" name="Phone" class="form-control" 
-                               th:value="${profile.phone}" required>
-                    </div>
-
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label for="Address1" class="required">Address Line 1</label>
-                        <input type="text" id="Address1" name="Address1" class="form-control" 
-                               th:value="${profile.address1}" required>
-                    </div>
-
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label for="Address2">Address Line 2</label>
-                        <input type="text" id="Address2" name="Address2" class="form-control" 
-                               th:value="${profile.address2 != null ? profile.address2 : ''}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="City" class="required">City</label>
-                        <input type="text" id="City" name="City" class="form-control" 
-                               th:value="${profile.city}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="State" class="required">State</label>
-                        <select id="State" name="State" class="form-control" required>
-                            <option th:value="${profile.state}" th:selected="true" th:text="${profile.state}">State</option>
-                            <option value="Andra Pradesh">Andra Pradesh</option>
-                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                            <option value="Assam">Assam</option>
-                            <option value="Bihar">Bihar</option>
-                            <option value="Chhattisgarh">Chhattisgarh</option>
-                            <option value="Goa">Goa</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Himachal Pradesh">Himachal Pradesh</option>
-                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                            <option value="Jharkhand">Jharkhand</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="Madya Pradesh">Madya Pradesh</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Manipur">Manipur</option>
-                            <option value="Meghalaya">Meghalaya</option>
-                            <option value="Mizoram">Mizoram</option>
-                            <option value="Nagaland">Nagaland</option>
-                            <option value="Orissa">Orissa</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Sikkim">Sikkim</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Telagana">Telagana</option>
-                            <option value="Tripura">Tripura</option>
-                            <option value="Uttaranchal">Uttaranchal</option>
-                            <option value="Uttar Pradesh">Uttar Pradesh</option>
-                            <option value="West Bengal">West Bengal</option>
-                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                            <option value="Chandigarh">Chandigarh</option>
-                            <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
-                            <option value="Daman and Diu">Daman and Diu</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Lakshadeep">Lakshadeep</option>
-                            <option value="Pondicherry">Pondicherry</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="PinCode" class="required">Pin Code</label>
-                        <input type="text" id="PinCode" name="PinCode" class="form-control" 
-                               th:value="${profile.pinCode}" required>
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">💾 Update Profile</button>
-                    <a th:href="@{/pages/html/postLogin/Profile}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
-        </div>
-        
-        <div th:if="${profile == null}" class="alert alert-error">
-            Profile not found.
         </div>
     </div>
     
     <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
-

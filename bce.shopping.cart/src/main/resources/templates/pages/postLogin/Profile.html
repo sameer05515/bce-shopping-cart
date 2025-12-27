@@ -4,93 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - BCE Shopping Cart</title>
-    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
 </head>
-<body class="body-style">
+<body>
     <div th:replace="~{common/header :: header}"></div>
     
-    <div class="page-container">
-        <div class="page-header">
-            <h1>👤 My Profile</h1>
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-person"></i> My Profile</h1>
         </div>
     
-        <div th:if="${error != null}" class="alert alert-error">
-            <strong>Error:</strong> <span th:text="${error}">Error message</span>
+        <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error:</strong> <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
-        <div th:if="${success != null}" class="alert alert-success">
-            <strong>Success:</strong> <span th:text="${success}">Success message</span>
+        <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Success:</strong> <span th:text="${success}">Success message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
         <div th:if="${profile != null}">
-            <div class="profile-card">
-                <div class="card-header">Personal Information</div>
-                <div class="profile-info">
-                    <div class="profile-label">Username:</div>
-                    <div class="profile-value" th:text="${profile.userName}">Username</div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-person-badge"></i> Personal Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Username:</dt>
+                                <dd class="col-sm-8" th:text="${profile.userName}">Username</dd>
+                                
+                                <dt class="col-sm-4">First Name:</dt>
+                                <dd class="col-sm-8" th:text="${profile.firstName}">First Name</dd>
+                                
+                                <dt class="col-sm-4">Middle Name:</dt>
+                                <dd class="col-sm-8" th:text="${profile.middleName != null and !profile.middleName.isEmpty()} ? ${profile.middleName} : '—'">Middle Name</dd>
+                                
+                                <dt class="col-sm-4">Last Name:</dt>
+                                <dd class="col-sm-8" th:text="${profile.lastName}">Last Name</dd>
+                                
+                                <dt class="col-sm-4">Email:</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-envelope"></i> <span th:text="${profile.email}">Email</span>
+                                </dd>
+                                
+                                <dt class="col-sm-4">Phone:</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-telephone"></i> <span th:text="${profile.phone}">Phone</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
-                <div class="profile-info">
-                    <div class="profile-label">First Name:</div>
-                    <div class="profile-value" th:text="${profile.firstName}">First Name</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Middle Name:</div>
-                    <div class="profile-value" th:text="${profile.middleName != null and !profile.middleName.isEmpty()} ? ${profile.middleName} : '—'">Middle Name</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Last Name:</div>
-                    <div class="profile-value" th:text="${profile.lastName}">Last Name</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Email:</div>
-                    <div class="profile-value" th:text="${profile.email}">Email</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Phone:</div>
-                    <div class="profile-value" th:text="${profile.phone}">Phone</div>
-                </div>
-            </div>
 
-            <div class="profile-card">
-                <div class="card-header">Address Information</div>
-                <div class="profile-info">
-                    <div class="profile-label">Address Line 1:</div>
-                    <div class="profile-value" th:text="${profile.address1}">Address 1</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Address Line 2:</div>
-                    <div class="profile-value" th:text="${profile.address2 != null and !profile.address2.isEmpty()} ? ${profile.address2} : '—'">Address 2</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">City:</div>
-                    <div class="profile-value" th:text="${profile.city}">City</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">State:</div>
-                    <div class="profile-value" th:text="${profile.state}">State</div>
-                </div>
-                <div class="profile-info">
-                    <div class="profile-label">Pin Code:</div>
-                    <div class="profile-value" th:text="${profile.pinCode}">Pin Code</div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Address Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Address Line 1:</dt>
+                                <dd class="col-sm-8" th:text="${profile.address1}">Address 1</dd>
+                                
+                                <dt class="col-sm-4">Address Line 2:</dt>
+                                <dd class="col-sm-8" th:text="${profile.address2 != null and !profile.address2.isEmpty()} ? ${profile.address2} : '—'">Address 2</dd>
+                                
+                                <dt class="col-sm-4">City:</dt>
+                                <dd class="col-sm-8" th:text="${profile.city}">City</dd>
+                                
+                                <dt class="col-sm-4">State:</dt>
+                                <dd class="col-sm-8" th:text="${profile.state}">State</dd>
+                                
+                                <dt class="col-sm-4">Pin Code:</dt>
+                                <dd class="col-sm-8" th:text="${profile.pinCode}">Pin Code</dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="btn-group">
-                <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-primary">
-                    ✏️ Edit Profile
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                <a th:href="@{/pages/html/postLogin/EditProfile}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-pencil"></i> Edit Profile
                 </a>
-                <a th:href="@{/pages/html/postLogin/ChangePassword}" class="btn btn-secondary">
-                    🔒 Change Password
+                <a th:href="@{/pages/html/postLogin/ChangePassword}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-key"></i> Change Password
                 </a>
             </div>
         </div>
         
-        <div th:if="${profile == null}" class="alert alert-error">
-            Profile not found.
+        <div th:if="${profile == null}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> Profile not found.
         </div>
     </div>
     
     <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
-

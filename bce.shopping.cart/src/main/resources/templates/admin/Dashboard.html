@@ -4,61 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - BCE Shopping Cart</title>
-    <link rel="stylesheet" th:href="@{/pages/lib/css/main.css}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/pages/lib/css/custom.css}">
 </head>
-<body class="body-style">
+<body>
     <div th:replace="~{common/header :: header}"></div>
     
-    <div class="page-container">
-        <div class="page-header">
-            <h1>⚙️ Admin Dashboard</h1>
+    <div class="container my-5">
+        <div class="page-header mb-4">
+            <h1><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
-            <div class="card">
-                <div class="card-header">📚 Total Books</div>
-                <div style="font-size: 3em; color: #667eea; text-align: center; padding: 20px;">
-                    <span th:text="${totalBooks != null ? totalBooks : 0}">0</span>
-                </div>
-                <div style="text-align: center;">
-                    <a th:href="@{/admin/books}" class="btn btn-primary">Manage Books</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">📁 Total Categories</div>
-                <div style="font-size: 3em; color: #667eea; text-align: center; padding: 20px;">
-                    <span th:text="${totalCategories != null ? totalCategories : 0}">0</span>
-                </div>
-                <div style="text-align: center;">
-                    <a th:href="@{/admin/categories}" class="btn btn-primary">Manage Categories</a>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-book"></i> Total Books</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 text-primary mb-3" th:text="${totalBooks != null ? totalBooks : 0}">0</h2>
+                        <a th:href="@{/admin/books}" class="btn btn-primary">
+                            <i class="bi bi-gear"></i> Manage Books
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">📋 Orders</div>
-                <div style="font-size: 3em; color: #667eea; text-align: center; padding: 20px;">
-                    📦
+            <div class="col-md-4">
+                <div class="card shadow border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-folder"></i> Total Categories</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 text-success mb-3" th:text="${totalCategories != null ? totalCategories : 0}">0</h2>
+                        <a th:href="@{/admin/categories}" class="btn btn-success">
+                            <i class="bi bi-gear"></i> Manage Categories
+                        </a>
+                    </div>
                 </div>
-                <div style="text-align: center;">
-                    <a th:href="@{/admin/orders}" class="btn btn-primary">Manage Orders</a>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-receipt-cutoff"></i> Orders</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 text-info mb-3">
+                            <i class="bi bi-box-seam"></i>
+                        </h2>
+                        <a th:href="@{/admin/orders}" class="btn btn-info text-white">
+                            <i class="bi bi-gear"></i> Manage Orders
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="margin-top: 30px;">
-            <div class="card-header">Quick Actions</div>
-            <div class="btn-group" style="flex-wrap: wrap;">
-                <a th:href="@{/admin/books/add}" class="btn btn-success">➕ Add New Book</a>
-                <a th:href="@{/admin/categories/add}" class="btn btn-success">➕ Add New Category</a>
-                <a th:href="@{/admin/books}" class="btn btn-secondary">📋 View All Books</a>
-                <a th:href="@{/admin/categories}" class="btn btn-secondary">📋 View All Categories</a>
-                <a th:href="@{/admin/orders}" class="btn btn-secondary">📋 View All Orders</a>
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a th:href="@{/admin/books/new}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Add New Book
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a th:href="@{/admin/categories/new}" class="btn btn-outline-success w-100">
+                            <i class="bi bi-plus-circle"></i> Add New Category
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <div th:replace="~{common/footer :: footer}"></div>
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
-
