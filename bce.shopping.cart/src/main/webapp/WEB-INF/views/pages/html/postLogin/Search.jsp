@@ -1,13 +1,13 @@
 <html>
     <head>
         <title>Search Results</title>
-        <link rel="stylesheet" href="../../lib/css/main.css">
-        <script src="../../lib/js/SearchItems.js"></script>
+        <link rel="stylesheet" href="/pages/lib/css/main.css">
+        <script src="/pages/lib/js/SearchItems.js"></script>
     </head>
     <body class="body-style">
         <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
         <br>
-        <a href="Logout.jsp">
+        <a href="/pages/html/postLogin/Logout.jsp">
             <font size="4">Click here to Logout.</font>
         </a>
 
@@ -38,7 +38,7 @@
             
             if(user_src != null){
                     %>
-                    <form action="Inter_Cart.jsp" name="cart">
+                    <form action="/pages/html/postLogin/Inter_Cart.jsp" name="cart">
                         <table border="1">
                             <tr>
                                 <td>S.No</td>
@@ -150,10 +150,11 @@
                     </form>
                     <%
             }else{
-                response.sendRedirect("../preLogin/Unauthorised.html");
+                response.sendRedirect("/pages/html/preLogin/Unauthorised.html");
             }
 
         %>
     </body>
     
 </html>
+

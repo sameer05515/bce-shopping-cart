@@ -10,7 +10,7 @@
         if(userAuth==null){
             response.sendRedirect("../html/preLogin/InvalidUser.html");
         }else{
-            session.putValue("user",userAuth.getUserName());
+            session.setAttribute("user",userAuth.getUserName());
             if("Administrator".equalsIgnoreCase(userAuth.getUserName())){
                 response.sendRedirect("../html/postLogin/Admin.html");
             }else{

@@ -1,16 +1,16 @@
 package com.p.bce.shopping.cart.rpc.bc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.p.bce.shopping.cart.rpc.dao.BookDetailsDAO;
-import com.p.bce.shopping.cart.rpc.dao.CategoryDetailsDAO;
 import com.p.bce.shopping.cart.rpc.pojo.BookDetailDTO;
 
+@Service
 public class BookDetailsBC {
 	
-private BookDetailsDAO objBookDetailsDAO;
-	
-	public BookDetailsBC() {
-		objBookDetailsDAO=new BookDetailsDAO();
-	}
+	@Autowired
+	private BookDetailsDAO objBookDetailsDAO;
 
 	public BookDetailDTO getBookDetail(int bookId) {
 

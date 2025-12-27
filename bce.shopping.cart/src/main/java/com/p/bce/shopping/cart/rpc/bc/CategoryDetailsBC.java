@@ -2,16 +2,18 @@ package com.p.bce.shopping.cart.rpc.bc;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.p.bce.shopping.cart.rpc.dao.CategoryDetailsDAO;
 import com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO;
 import com.p.bce.shopping.cart.rpc.pojo.SearchedBookCategories;
 
+@Service
 public class CategoryDetailsBC {
-	private CategoryDetailsDAO objCategoryDetailsDAO;
 	
-	public CategoryDetailsBC() {
-		objCategoryDetailsDAO=new CategoryDetailsDAO();
-	}
+	@Autowired
+	private CategoryDetailsDAO objCategoryDetailsDAO;
 
 	public List<CategoryDetailsDTO> getAllCategoryDetails() {
 		
@@ -30,7 +32,6 @@ public class CategoryDetailsBC {
 	}
 
 	public int insertIntoTempDetails(SearchedBookCategories objSearchedBookCategories) {
-		// TODO Auto-generated method stub
 		return objCategoryDetailsDAO.insertIntoTempDetails(objSearchedBookCategories);
 	}
 

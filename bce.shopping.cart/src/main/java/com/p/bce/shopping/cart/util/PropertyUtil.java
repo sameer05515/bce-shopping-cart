@@ -6,7 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.p.bce.shopping.cart.servlet.CServletCtxLisener;
 
@@ -16,7 +17,7 @@ import com.p.bce.shopping.cart.servlet.CServletCtxLisener;
 
 public class PropertyUtil {
 
-	static Logger log = Logger.getLogger(PropertyUtil.class);
+	static Logger log = LoggerFactory.getLogger(PropertyUtil.class);
 	Properties propCommonUtility = new Properties();
 	private static PropertyUtil thisInsatace;
 

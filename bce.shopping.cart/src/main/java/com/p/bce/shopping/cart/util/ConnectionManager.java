@@ -6,7 +6,8 @@ package com.p.bce.shopping.cart.util;
 
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -20,7 +21,7 @@ public class ConnectionManager {
 
 	private ComboPooledDataSource cpdsInterviewMgmtDB;
 	
-	static Logger logger = Logger.getLogger(ConnectionManager.class);
+	static Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
 	// static {
 	// try {

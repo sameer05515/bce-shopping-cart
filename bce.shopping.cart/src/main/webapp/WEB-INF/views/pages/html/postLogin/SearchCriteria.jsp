@@ -1,8 +1,8 @@
 <html>
     <head>
         <title>Search Items</title>
-        <link rel="stylesheet" href="../../lib/css/main.css">
-        <script src="../../lib/js/SearchItems.js"></script>
+        <link rel="stylesheet" href="/pages/lib/css/main.css">
+        <script src="/pages/lib/js/SearchItems.js"></script>
     </head>
 
     <body class="body-style">
@@ -81,7 +81,7 @@
                         <input type="button" value="Search" name="Search" onclick="startSearch();">
                     </td>
                     <td width="51%" height="25">
-                        Click <a href="Logout.jsp">here</a> to logout.
+                        Click <a href="/pages/html/postLogin/Logout.jsp">here</a> to logout.
                     </td>
                 </tr>
             </table>
@@ -90,3 +90,4 @@
 
     </body>
 </html>
+
