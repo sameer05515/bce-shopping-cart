@@ -7,16 +7,11 @@
         <link rel="stylesheet" href="/pages/lib/css/main.css">
     </head>
     <body class="body-style">
+        <jsp:include page="/WEB-INF/views/common/Header.jsp" />
+        
         <div class="page-container">
             <div class="page-header">
                 <h1>👤 My Profile</h1>
-            </div>
-
-            <div class="nav-bar">
-                <div class="nav-links">
-                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🏠 Home</a>
-                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
-                </div>
             </div>
         
             <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.UserProfileDTO"%>
@@ -106,6 +101,8 @@
                 </div>
             <% } %>
         </div>
+        
+        <jsp:include page="/WEB-INF/views/common/Footer.jsp" />
     </body>
 </html>
 

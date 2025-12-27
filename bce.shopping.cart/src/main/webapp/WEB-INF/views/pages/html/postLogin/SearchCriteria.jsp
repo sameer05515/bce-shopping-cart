@@ -9,17 +9,12 @@
     </head>
 
     <body class="body-style">
+        <jsp:include page="/WEB-INF/views/common/Header.jsp" />
+        
         <div class="page-container">
             <div class="page-header">
                 <h1>🔍 Search Books</h1>
                 <h2>Find Your Favorite Books</h2>
-            </div>
-
-            <div class="nav-bar">
-                <div class="nav-links">
-                    <a href="/pages/html/postLogin/Profile.jsp">👤 My Profile</a>
-                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
-                </div>
             </div>
 
             <%@ page language="java" import="com.p.bce.shopping.cart.rpc.pojo.CategoryDetailsDTO"%>
@@ -81,5 +76,7 @@
                 </div>
             </form>
         </div>
+        
+        <jsp:include page="/WEB-INF/views/common/Footer.jsp" />
     </body>
 </html>

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -96,6 +97,88 @@ public class CategoryDetailsDAO extends AbstractDAO {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return 0;
+		}
+	}
+
+	public CategoryDetailsDTO getCategoryById(int categoryId) {
+		try {
+			return jdbcTemplate.queryForObject(
+					"SELECT CategoryId, CategoryName FROM category_details WHERE CategoryId = ?",
+					new RowMapper<CategoryDetailsDTO>() {
+						@Override
+						public CategoryDetailsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+							return new CategoryDetailsDTO(rs.getInt("CategoryId"), rs.getString("CategoryName"));
+						}
+					},
+					categoryId);
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean categoryExists(String categoryName) {
+		try {
+			Integer count = jdbcTemplate.queryForObject(
+					"SELECT COUNT(*) FROM category_details WHERE UPPER(CategoryName) = UPPER(?)",
+					Integer.class,
+					categoryName);
+			return count != null && count > 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	public int createCategory(CategoryDetailsDTO category) {
+		try {
+			// Get next category ID
+			Integer nextId = jdbcTemplate.queryForObject(
+					"SELECT COALESCE(MAX(CategoryId), 0) + 1 FROM category_details",
+					Integer.class);
+			
+			return jdbcTemplate.update(
+					"INSERT INTO category_details (CategoryId, CategoryName) VALUES (?, ?)",
+					nextId,
+					category.getCategoryName());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
+
+	public boolean updateCategory(CategoryDetailsDTO category) {
+		try {
+			int rowsAffected = jdbcTemplate.update(
+					"UPDATE category_details SET CategoryName = ? WHERE CategoryId = ?",
+					category.getCategoryName(),
+					category.getCategoryId());
+			return rowsAffected > 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean deleteCategory(int categoryId) {
+		try {
+			// Check if category is used by any books
+			Integer bookCount = jdbcTemplate.queryForObject(
+					"SELECT COUNT(*) FROM book_details WHERE CategoryId = ?",
+					Integer.class,
+					categoryId);
+			
+			if (bookCount != null && bookCount > 0) {
+				return false; // Cannot delete category that has books
+			}
+			
+			int rowsAffected = jdbcTemplate.update("DELETE FROM category_details WHERE CategoryId = ?", categoryId);
+			return rowsAffected > 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
 		}
 	}
 

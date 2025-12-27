@@ -8,17 +8,11 @@
         <script src="/pages/lib/js/SearchItems.js"></script>
     </head>
     <body class="body-style">
+        <jsp:include page="/WEB-INF/views/common/Header.jsp" />
+        
         <div class="page-container">
             <div class="page-header">
                 <h1>📚 Search Results</h1>
-            </div>
-
-            <div class="nav-bar">
-                <div class="nav-links">
-                    <a href="/pages/html/postLogin/SearchCriteria.jsp">🔍 New Search</a>
-                    <a href="/pages/html/postLogin/Profile.jsp">👤 My Profile</a>
-                    <a href="/pages/html/postLogin/Logout.jsp">🚪 Logout</a>
-                </div>
             </div>
 
             <%@ page language="java" import="java.util.*"%>
@@ -177,5 +171,7 @@
                 }
             %>
         </div>
+        
+        <jsp:include page="/WEB-INF/views/common/Footer.jsp" />
     </body>
 </html>
