@@ -49,12 +49,13 @@
                             <tr th:each="order : ${orders}">
                                 <td><strong>#<span th:text="${order.orderId}">0</span></strong></td>
                                 <td>
-                                    <span th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'MMM dd, yyyy HH:mm') : 'N/A'}">Date</span>
+                                    <span th:if="${order.orderDate != null}" th:text="${#dates.format(order.orderDate, 'MMM dd, yyyy HH:mm')}">Date</span>
+                                    <span th:if="${order.orderDate == null}">N/A</span>
                                 </td>
-                                <td><strong style="color: #28a745;">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)}">0.00</span></strong></td>
+                                <td><strong style="color: #28a745;">₹<span th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 2) : '0.00'}">0.00</span></strong></td>
                                 <td>
                                     <span style="padding: 5px 10px; border-radius: 5px; background: #667eea; color: white; font-size: 0.9em;">
-                                        <span th:text="${order.status != null ? order.status : 'CONFIRMED'}">Status</span>
+                                        <span th:text="${order.status != null and !order.status.isEmpty() ? order.status : 'CONFIRMED'}">Status</span>
                                     </span>
                                 </td>
                                 <td>

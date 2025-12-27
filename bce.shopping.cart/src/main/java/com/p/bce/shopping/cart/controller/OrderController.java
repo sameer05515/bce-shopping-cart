@@ -125,15 +125,34 @@ public class OrderController {
 
     @GetMapping({"/pages/html/postLogin/OrderHistory.jsp", "/pages/html/postLogin/OrderHistory"})
     public String orderHistory(HttpSession session, Model model) {
+        System.out.println("OrderController.orderHistory() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
-        List<OrderDTO> orders = orderBC.getOrdersByUser(userName);
-        model.addAttribute("orders", orders);
-
-        return "pages/postLogin/OrderHistory";
+        System.out.println("User logged in: " + userName);
+        try {
+            List<OrderDTO> orders = orderBC.getOrdersByUser(userName);
+            System.out.println("Orders retrieved: " + (orders != null ? orders.size() : "null"));
+            
+            // Ensure orders list is never null
+            if (orders == null) {
+                orders = new java.util.ArrayList<>();
+            }
+            
+            model.addAttribute("orders", orders);
+            System.out.println("Returning view: pages/postLogin/OrderHistory");
+            return "pages/postLogin/OrderHistory";
+        } catch (Exception e) {
+            System.err.println("ERROR in orderHistory: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            // On error, still return the template with empty list
+            model.addAttribute("orders", new java.util.ArrayList<OrderDTO>());
+            model.addAttribute("error", "Error loading order history: " + e.getMessage());
+            return "pages/postLogin/OrderHistory";
+        }
     }
 
     @GetMapping({"/pages/html/postLogin/OrderDetails.jsp", "/pages/html/postLogin/OrderDetails"})
@@ -185,15 +204,34 @@ public class OrderController {
     // Admin endpoints
     @GetMapping("/admin/orders")
     public String adminOrderList(HttpSession session, Model model) {
+        System.out.println("OrderController.adminOrderList() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
-        List<OrderDTO> orders = orderBC.getAllOrders();
-        model.addAttribute("orders", orders);
-
-        return "admin/OrderList";
+        System.out.println("User logged in: " + userName);
+        try {
+            List<OrderDTO> orders = orderBC.getAllOrders();
+            System.out.println("All orders retrieved: " + (orders != null ? orders.size() : "null"));
+            
+            // Ensure orders list is never null
+            if (orders == null) {
+                orders = new java.util.ArrayList<>();
+            }
+            
+            model.addAttribute("orders", orders);
+            System.out.println("Returning view: admin/OrderList");
+            return "admin/OrderList";
+        } catch (Exception e) {
+            System.err.println("ERROR in adminOrderList: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            // On error, still return the template with empty list
+            model.addAttribute("orders", new java.util.ArrayList<OrderDTO>());
+            model.addAttribute("error", "Error loading orders: " + e.getMessage());
+            return "admin/OrderList";
+        }
     }
 
     @GetMapping("/admin/orders/details")
@@ -202,18 +240,30 @@ public class OrderController {
             HttpSession session,
             Model model) {
         
+        System.out.println("OrderController.adminOrderDetails() called for order ID: " + orderId);
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
-        OrderDTO order = orderBC.getOrderById(orderId);
-        if (order == null) {
-            return "redirect:/admin/orders?error=Order not found";
-        }
+        System.out.println("User logged in: " + userName);
+        try {
+            OrderDTO order = orderBC.getOrderById(orderId);
+            if (order == null) {
+                System.out.println("Order not found: " + orderId);
+                return "redirect:/admin/orders?error=Order not found";
+            }
 
-        model.addAttribute("order", order);
-        return "admin/OrderDetails";
+            System.out.println("Order found: " + order.getOrderId() + " for user: " + order.getUserId());
+            model.addAttribute("order", order);
+            System.out.println("Returning view: admin/OrderDetails");
+            return "admin/OrderDetails";
+        } catch (Exception e) {
+            System.err.println("ERROR in adminOrderDetails: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return "redirect:/admin/orders?error=" + e.getMessage();
+        }
     }
 
     @PostMapping("/admin/orders/updateStatus")
