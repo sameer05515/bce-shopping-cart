@@ -7,9 +7,10 @@
     <body class="body-style">
         <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
         <br>
-        <a href="/pages/html/postLogin/Logout.jsp">
-            <font size="4">Click here to Logout.</font>
-        </a>
+        <div style="text-align: right; margin: 10px;">
+            <a href="/pages/html/postLogin/Profile.jsp">My Profile</a> | 
+            <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
+        </div>
 
         <h1 style="text-align: center;"><u>ONLINE SHOPPING CART</u></h1>
         <%@ page language="java" import="java.util.*"%>

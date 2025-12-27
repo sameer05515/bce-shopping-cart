@@ -81,7 +81,8 @@
                         <input type="button" value="Search" name="Search" onclick="startSearch();">
                     </td>
                     <td width="51%" height="25">
-                        Click <a href="/pages/html/postLogin/Logout.jsp">here</a> to logout.
+                        <a href="/pages/html/postLogin/Profile.jsp">My Profile</a> | 
+                        <a href="/pages/html/postLogin/Logout.jsp">Logout</a>
                     </td>
                 </tr>
             </table>
