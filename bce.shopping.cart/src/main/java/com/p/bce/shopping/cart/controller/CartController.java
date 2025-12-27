@@ -50,9 +50,10 @@ public class CartController {
         return "pages/postLogin/Cart";
     }
 
-    @PostMapping("/pages/html/postLogin/Inter_Cart.jsp")
+    @PostMapping({"/pages/html/postLogin/Inter_Cart.jsp", "/cart/add"})
     public String addToCart(
-            @RequestParam(value = "chk", required = false) String[] bookIds,
+            @RequestParam(value = "chk", required = false) String[] chkParam,
+            @RequestParam(value = "bookIds", required = false) String[] bookIdsParam,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         
@@ -61,9 +62,12 @@ public class CartController {
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
+        // Support both parameter names: "chk" (old) and "bookIds" (new)
+        String[] bookIds = (chkParam != null && chkParam.length > 0) ? chkParam : bookIdsParam;
+        
         if (bookIds == null || bookIds.length == 0) {
             redirectAttributes.addFlashAttribute("error", "Please select at least one book to add to cart.");
-            return "redirect:/pages/html/postLogin/Search";
+            return "redirect:/pages/html/postLogin/Search.jsp";
         }
 
         @SuppressWarnings("unchecked")

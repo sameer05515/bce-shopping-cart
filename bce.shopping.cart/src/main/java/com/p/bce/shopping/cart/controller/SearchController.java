@@ -39,7 +39,19 @@ public class SearchController {
 		}
 	}
 
-	@PostMapping("/pages/html/postLogin/Search.jsp")
+	@GetMapping({"/pages/html/postLogin/Search.jsp", "/pages/html/postLogin/Search"})
+	public String viewSearchResults(HttpSession session, Model model) {
+		String user = (String) session.getAttribute("user");
+		if (user == null) {
+			return "redirect:/pages/html/preLogin/Unauthorised.html";
+		}
+		
+		// If there are search results in session, display them
+		// Otherwise redirect to search criteria
+		return "redirect:/pages/html/postLogin/SearchCriteria";
+	}
+
+	@PostMapping({"/pages/html/postLogin/Search.jsp", "/pages/html/postLogin/Search"})
 	public String search(
 			@RequestParam(value = "R1", required = false) String searchType,
 			@RequestParam(value = "R2", required = false, defaultValue = "N") String searchMode,
