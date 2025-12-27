@@ -32,7 +32,7 @@
         </div>
 
         <div th:if="${cartItems != null and !cartItems.isEmpty()}">
-            <form th:action="@{/cart/update}" method="POST">
+            <form th:action="@{/pages/html/postLogin/Cart/update}" method="POST">
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -49,18 +49,20 @@
                         <tbody>
                             <tr th:each="item, iterStat : ${cartItems}">
                                 <td th:text="${iterStat.count}">1</td>
-                                <td><strong th:text="${item.bookTitle}">Book Title</strong></td>
+                                <td><strong th:text="${item.title}">Book Title</strong></td>
                                 <td th:text="${item.author}">Author</td>
-                                <td>₹<span th:text="${item.price}">0</span></td>
+                                <td>₹<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0</span></td>
                                 <td>
-                                    <input type="number" th:name="'quantities[' + ${item.bookId} + ']'" 
+                                    <input type="number" 
+                                           th:name="'quantity_' + ${item.bookId}"
+                                           th:id="'quantity_' + ${item.bookId}"
                                            th:value="${item.quantity}" min="1" 
                                            th:max="${item.availableQuantity}" 
                                            class="form-control" style="width: 80px;">
                                 </td>
-                                <td><strong>₹<span th:text="${item.price * item.quantity}">0</span></strong></td>
+                                <td><strong>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)}">0</span></strong></td>
                                 <td>
-                                    <a th:href="@{/cart/remove/{bookId}(bookId=${item.bookId})}" 
+                                    <a th:href="@{/pages/html/postLogin/Cart/remove(bookId=${item.bookId})}" 
                                        class="btn btn-danger btn-sm">Remove</a>
                                 </td>
                             </tr>
@@ -81,7 +83,7 @@
 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">🔄 Update Cart</button>
-                    <a th:href="@{/cart/clear}" class="btn btn-secondary" 
+                    <a th:href="@{/pages/html/postLogin/Cart/clear}" class="btn btn-secondary" 
                        onclick="return confirm('Are you sure you want to clear your cart?');">🗑️ Clear Cart</a>
                     <a th:href="@{/pages/html/postLogin/Checkout}" class="btn btn-success">💳 Proceed to Checkout</a>
                 </div>

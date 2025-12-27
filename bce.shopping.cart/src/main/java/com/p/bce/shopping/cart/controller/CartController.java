@@ -26,16 +26,21 @@ public class CartController {
 
     @GetMapping({"/pages/html/postLogin/Cart.jsp", "/pages/html/postLogin/Cart"})
     public String viewCart(HttpSession session, Model model) {
+        System.out.println("CartController.viewCart() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
+        System.out.println("User logged in: " + userName);
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null) {
             cart = new ArrayList<>();
         }
+
+        System.out.println("Cart items: " + (cart != null ? cart.size() : "null"));
 
         // Calculate totals
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -47,6 +52,7 @@ public class CartController {
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("total", subtotal); // For now, no tax/shipping
 
+        System.out.println("Returning view: pages/postLogin/Cart");
         return "pages/postLogin/Cart";
     }
 
@@ -123,8 +129,7 @@ public class CartController {
 
     @PostMapping("/pages/html/postLogin/Cart/update")
     public String updateCartItem(
-            @RequestParam("bookId") int bookId,
-            @RequestParam("quantity") int quantity,
+            javax.servlet.http.HttpServletRequest request,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         
@@ -139,21 +144,38 @@ public class CartController {
             return "redirect:/pages/html/postLogin/Cart";
         }
 
-        // Update quantity
+        // Update quantities for all items
+        java.util.Map<String, String[]> params = request.getParameterMap();
+        boolean hasError = false;
+        java.util.List<CartItemDTO> itemsToRemove = new ArrayList<>();
+        
         for (CartItemDTO item : cart) {
-            if (item.getBookId() == bookId) {
-                if (quantity <= 0) {
-                    cart.remove(item);
-                } else if (quantity <= item.getAvailableQuantity()) {
-                    item.setQuantity(quantity);
-                } else {
-                    redirectAttributes.addFlashAttribute("error", "Quantity exceeds available stock.");
+            String paramName = "quantity_" + item.getBookId();
+            String[] quantityValues = params.get(paramName);
+            if (quantityValues != null && quantityValues.length > 0) {
+                try {
+                    int quantity = Integer.parseInt(quantityValues[0]);
+                    if (quantity <= 0) {
+                        itemsToRemove.add(item);
+                    } else if (quantity <= item.getAvailableQuantity()) {
+                        item.setQuantity(quantity);
+                    } else {
+                        hasError = true;
+                        redirectAttributes.addFlashAttribute("error", "Quantity exceeds available stock for " + item.getTitle() + ".");
+                    }
+                } catch (NumberFormatException e) {
+                    // Skip invalid quantities
                 }
-                break;
             }
         }
+        
+        // Remove items after iteration to avoid concurrent modification
+        cart.removeAll(itemsToRemove);
 
         session.setAttribute("cart", cart);
+        if (!hasError) {
+            redirectAttributes.addFlashAttribute("message", "Cart updated successfully!");
+        }
         return "redirect:/pages/html/postLogin/Cart";
     }
 

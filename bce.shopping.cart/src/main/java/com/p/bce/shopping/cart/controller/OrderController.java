@@ -27,17 +27,22 @@ public class OrderController {
 
     @GetMapping({"/pages/html/postLogin/Checkout.jsp", "/pages/html/postLogin/Checkout"})
     public String checkout(HttpSession session, Model model) {
+        System.out.println("OrderController.checkout() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
+        System.out.println("User logged in: " + userName);
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
+            System.out.println("Cart is empty, redirecting to Cart page");
             return "redirect:/pages/html/postLogin/Cart";
         }
 
+        System.out.println("Cart has " + cart.size() + " items");
         // Calculate totals
         BigDecimal subtotal = BigDecimal.ZERO;
         for (CartItemDTO item : cart) {
@@ -48,22 +53,35 @@ public class OrderController {
         model.addAttribute("subtotal", subtotal);
         model.addAttribute("total", subtotal);
 
+        System.out.println("Returning view: pages/postLogin/Checkout");
         return "pages/postLogin/Checkout";
     }
 
-    @PostMapping("/pages/html/postLogin/PlaceOrder.jsp")
+    @GetMapping({"/pages/html/postLogin/PlaceOrder.jsp", "/pages/html/postLogin/PlaceOrder"})
+    public String placeOrderGet(HttpSession session) {
+        // If accessed via GET, redirect to Checkout page
+        return "redirect:/pages/html/postLogin/Checkout";
+    }
+
+    @PostMapping({"/pages/html/postLogin/PlaceOrder.jsp", "/pages/html/postLogin/PlaceOrder"})
     public String placeOrder(HttpSession session, RedirectAttributes redirectAttributes) {
+        System.out.println("OrderController.placeOrder() called");
         String userName = (String) session.getAttribute("user");
         if (userName == null) {
+            System.out.println("User not logged in, redirecting to Unauthorised");
             return "redirect:/pages/html/preLogin/Unauthorised.html";
         }
 
+        System.out.println("User logged in: " + userName);
         @SuppressWarnings("unchecked")
         List<CartItemDTO> cart = (List<CartItemDTO>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
+            System.out.println("Cart is empty, redirecting to Cart page");
             redirectAttributes.addFlashAttribute("error", "Your cart is empty.");
             return "redirect:/pages/html/postLogin/Cart";
         }
+
+        System.out.println("Cart has " + cart.size() + " items");
 
         // Calculate total
         BigDecimal total = BigDecimal.ZERO;
@@ -89,13 +107,17 @@ public class OrderController {
         }
 
         // Create order
+        System.out.println("Creating order with " + orderDetails.size() + " items, total: " + total);
         int orderId = orderBC.createOrder(order, orderDetails);
+        System.out.println("Order created with ID: " + orderId);
         if (orderId > 0) {
             // Clear cart
             session.removeAttribute("cart");
             redirectAttributes.addFlashAttribute("message", "Order placed successfully! Order ID: " + orderId);
+            System.out.println("Order placed successfully, redirecting to OrderHistory");
             return "redirect:/pages/html/postLogin/OrderHistory";
         } else {
+            System.err.println("ERROR: Failed to create order");
             redirectAttributes.addFlashAttribute("error", "Failed to place order. Please check stock availability.");
             return "redirect:/pages/html/postLogin/Cart";
         }
